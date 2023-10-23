@@ -5,7 +5,7 @@
     "cleanup": [
         "/bin",
         "/include",
-        "/lib/pkgconfig,
+        "/lib/pkgconfig",
         "/lib/girepository-1.0",
         "/man",
         "/share/aclocal",
