@@ -1,0 +1,93 @@
+name: Build and publish AppImages
+
+env:
+  UBUNTU_RELEASE: mantic
+  UBUNTU_PUBKEY: 871920D1991BC93C
+
+on:
+  pull_request:
+  push:
+    branches: main
+  release:
+    types: published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rlespinasse/github-slug-action@v4
+
+      - name: Setup qemu for docker
+        uses: docker/setup-qemu-action@v2
+        if: matrix.platform != 'linux/amd64'
+
+      - name: Setup buildx for docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Compile in docker
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ matrix.platform }}
+          outputs: build
+          build-args: |
+            UBUNTU_RELEASE
+
+      - name: Prepare environment for building AppImage
+        env:
+          TARGET_PLATFORM: ${{ matrix.platform }}
+        shell: bash
+        run: |
+          set -eua
+          . build/.build-metadata.env
+          rm build/.build-metadata.env
+          APPIMAGE_SOURCE=build
+          APPIMAGE_VERSION="${GITHUB_REF_SLUG}"
+          APPIMAGE_APT_ARCH="${TARGETARCH}"
+          APPIMAGE_APT_DISTRO="${UBUNTU_RELEASE}"
+          APPIMAGE_APT_PUBKEY="${UBUNTU_PUBKEY}"
+          APPIMAGE_ARCH="${TARGETMACHINE}"
+          printenv | grep ^APPIMAGE_ >>"${GITHUB_ENV}"
+
+      - name: Build AppImage
+        uses: AppImageCrafters/build-appimage@v1.3
+        with:
+          recipe: data/AppImageBuilder.yml
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: appimages
+          path: |
+            ./*.AppImage
+            ./*.AppImage.zsync
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    needs:
+      - build
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: appimages
+          path: assets
+      - name: Upload artifacts to GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: assets/*

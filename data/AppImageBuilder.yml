@@ -1,0 +1,49 @@
+version: 1
+
+script:
+- |
+  mv "{{APPIMAGE_SOURCE}}" "${TARGET_APPDIR}"
+  # Manual installation is required until fix of https://github.com/AppImageCrafters/build-appimage/issues/5
+  if ! command -v mksquashfs >/dev/null; then
+    apt-get update && apt-get install -y --no-install-recommends squashfs-tools
+  fi
+
+AppDir:
+  app_info:
+    id: org.v1993.NXDumpClient
+    name: NXDumpClient
+    version: "{{APPIMAGE_VERSION}}"
+    icon: org.v1993.NXDumpClient
+    exec: usr/bin/nxdumpclient
+    exec_args: $@
+
+  apt:
+    arch:
+      - "{{APPIMAGE_APT_ARCH}}"
+    sources:
+      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ "{{APPIMAGE_APT_DISTRO}}" main
+        key_url: "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{APPIMAGE_APT_PUBKEY}}"
+      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ "{{APPIMAGE_APT_DISTRO}}"-updates main
+      - sourceline: deb [arch=amd64] http://security.ubuntu.com/ubuntu/ "{{APPIMAGE_APT_DISTRO}}"-security main
+      - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ "{{APPIMAGE_APT_DISTRO}}" main
+      - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ "{{APPIMAGE_APT_DISTRO}}"-updates main
+      - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ "{{APPIMAGE_APT_DISTRO}}"-security main
+    include:
+      - libadwaita-1-0
+      - libgtk-4-1
+      - libglib2.0-0
+      - libgusb2
+
+  files:
+    exclude:
+      - usr/share/man
+      - usr/share/doc/*/README.*
+      - usr/share/doc/*/changelog.*
+      - usr/share/doc/*/NEWS.*
+      - usr/share/doc/*/TODO.*
+      - usr/share/lintian
+      - usr/lib/*/glib-2.0
+
+AppImage:
+  arch: "{{APPIMAGE_ARCH}}"
+  update-information: "gh-releases-zsync|v1993|nxdumpclient|latest|NXDumpClient-*-{{APPIMAGE_ARCH}}.AppImage.zsync"
