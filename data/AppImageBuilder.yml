@@ -33,6 +33,11 @@ AppDir:
       - libgtk-4-1
       - libglib2.0-0
       - libgusb2
+    exclude:
+      - adwaita-icon-theme
+      - humanity-icon-theme
+      - dbus
+      - ubuntu-mono
 
   files:
     exclude:

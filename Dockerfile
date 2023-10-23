@@ -2,20 +2,22 @@ ARG UBUNTU_RELEASE=mantic
 
 FROM ubuntu:$UBUNTU_RELEASE AS build-stage
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      git ca-certificates build-essential \
-      valac gettext desktop-file-utils python3-gi \
-      libgtk-4-dev libadwaita-1-dev libgusb-dev meson
+      git ca-certificates build-essential meson \
+      valac gettext desktop-file-utils python3-gi libxml2-utils \
+      libgtk-4-dev libadwaita-1-dev libgusb-dev
 
 COPY . /
 
-ARG BUILD_TYPE=release
-ARG ENABLE_LTO=true
+ARG BUILD_TYPE=debug
+ARG ENABLE_LTO=false
 ARG TARGETOS TARGETARCH TARGETVARIANT
 
 RUN meson setup \
       --fatal-meson-warnings \
-      "--buildtype=${BUILD_TYPE}" \
-      "-Db_lto=${ENABLE_LTO}" \
+      --buildtype="${BUILD_TYPE}" \
+      -Db_lto="${ENABLE_LTO}" \
+      -Dudev_rules=disabled \
+      -Duse_libportal=disabled \
       --prefix=/usr \
       /build && \
     meson compile -C /build && \
