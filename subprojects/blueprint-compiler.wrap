@@ -1,0 +1,10 @@
+[wrap-file]
+directory = blueprint-compiler-v0.10.0
+source_url = https://gitlab.gnome.org/jwestman/blueprint-compiler/-/archive/v0.10.0/blueprint-compiler-v0.10.0.tar.gz
+source_filename = blueprint-compiler-v0.10.0.tar.gz
+source_hash = 2bc729b36897d0959a9890fb0997c9847aa9d2fc9356520bd8a46ed0b51ff4c0
+source_fallback_url = https://github.com/mesonbuild/wrapdb/releases/download/blueprint-compiler_0.10.0-1/blueprint-compiler-v0.10.0.tar.gz
+wrapdb_version = 0.10.0-1
+
+[provide]
+program_names = blueprint-compiler
