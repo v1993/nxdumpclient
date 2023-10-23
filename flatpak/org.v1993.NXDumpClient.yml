@@ -9,6 +9,8 @@ finish-args:
   - --socket=wayland
   # Switch USB access
   - --device=all
+  # Required for hotplug
+  - --share=network
   # Default dump destination
   - --filesystem=xdg-download
 
