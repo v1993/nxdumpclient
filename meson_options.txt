@@ -1,0 +1,2 @@
+option('use_libportal', type: 'feature', value: 'auto', description: 'Use libportal; required to support autostart')
+option('udev_rules', type: 'feature', value: 'auto', description: 'Install udev rules to allow user access to device')

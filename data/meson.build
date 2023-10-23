@@ -1,0 +1,54 @@
+desktop_file = i18n.merge_file(
+        input: 'org.v1993.NXDumpClient.desktop.in',
+       output: 'org.v1993.NXDumpClient.desktop',
+         type: 'desktop',
+       po_dir: '../po',
+      install: true,
+  install_dir: get_option('datadir') / 'applications'
+)
+
+desktop_utils = find_program('desktop-file-validate', required: false)
+if desktop_utils.found()
+  test('Validate desktop file', desktop_utils, args: [desktop_file])
+endif
+
+appstream_file = i18n.merge_file(
+        input: 'org.v1993.NXDumpClient.appdata.xml.in',
+       output: 'org.v1993.NXDumpClient.appdata.xml',
+       po_dir: '../po',
+      install: true,
+  install_dir: get_option('datadir') / 'appdata'
+)
+
+appstream_util = find_program('appstream-util', required: false)
+if appstream_util.found()
+  test('Validate appstream file', appstream_util, args: ['validate', appstream_file])
+endif
+
+install_data('org.v1993.NXDumpClient.gschema.xml',
+  install_dir: get_option('datadir') / 'glib-2.0' / 'schemas'
+)
+
+compile_schemas = find_program('glib-compile-schemas', required: false)
+if compile_schemas.found()
+  test('Validate schema file',
+       compile_schemas,
+       args: ['--strict', '--dry-run', meson.current_source_dir()])
+endif
+
+#if get_option('udev_rules').enable_auto_if(host_machine.system() == 'linux').enabled()
+if get_option('udev_rules').allowed()
+  install_data('71-nxdumptool.rules',
+    install_dir: get_option('prefix') / 'lib' / 'udev' / 'rules.d'
+  )
+endif
+
+#subdir('icons')
+
+install_data(
+  'icons/hicolor/scalable/apps/org.v1993.NXDumpClient.svg',
+  'icons/hicolor/256x256/apps/org.v1993.NXDumpClient.png',
+
+  install_dir: get_option('datadir'),
+  preserve_path: true
+)

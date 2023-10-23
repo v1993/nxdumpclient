@@ -1,0 +1,33 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NXDumpClientPreferencesWindow: Adw.PreferencesWindow {
+	Adw.PreferencesPage {
+		title: _("General settings");
+
+		Adw.PreferencesGroup {
+			title: _("Dump output options");
+
+			$NXDumpClientFileRow destination_directory {
+				title: C_("setting", "Destination directory");
+				select-directory: true;
+				allow-reset: true;
+				reset => $reset_destination_directory();
+
+				file-dialog: FileDialog {
+					title: C_("dialog title", "Dump destination directory");
+				};
+			}
+
+			Adw.SwitchRow flatten_output {
+				title: C_("setting", "Flatten dump directory");
+				subtitle: _("Avoid creating subfolders unless necessary");
+			}
+
+			Adw.SwitchRow checksum_nca {
+				title: C_("setting", "Verify NCA checksums");
+				subtitle: _("Extra integrity verification but will error out with non-standard dump options");
+			}
+		}
+	}
+}

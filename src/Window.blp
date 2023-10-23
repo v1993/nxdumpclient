@@ -1,0 +1,59 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NXDumpClientWindow: Adw.ApplicationWindow {
+	default-width: 600;
+	default-height: 500;
+	title: _("NX Dump Client");
+
+	Box {
+		orientation: vertical;
+
+		Adw.HeaderBar {
+			[end]
+			MenuButton {
+				icon-name: "open-menu-symbolic";
+				menu-model: primary_menu;
+			}
+		}
+
+		Adw.ToastOverlay toast_overlay {
+			Stack content_selector {
+				StackPage {
+					name: "placeholder";
+					child: Adw.StatusPage {
+						icon-name: "edit-find";
+						title: _("No Devices Connected");
+						description: _("Connect your Switch and start nxdumptool to proceed");
+					};
+				}
+
+				StackPage {
+					name: "devlist";
+					child: ListView list_view {
+						vexpand: true;
+						model: bind template.devices_model;
+
+						factory: SignalListItemFactory {
+							setup => $setup_element();
+							teardown => $teardown_element();
+							bind => $bind_element();
+							unbind => $unbind_element();
+						};
+					};
+				}
+			}
+		}
+	}
+}
+
+menu primary_menu {
+	section {
+		item (_("_Preferences"), "app.preferences")
+		item (_("_Keyboard Shortcuts"), "win.show-help-overlay")
+		item (_("_About NXDumpClient"), "app.about")
+	}
+	section {
+		item (_("_Quit"), "app.quit")
+	}
+}

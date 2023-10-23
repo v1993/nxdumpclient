@@ -1,0 +1,101 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NXDumpClientDeviceStatusRow: Adw.Bin {
+	Box {
+		orientation: vertical;
+		hexpand: true;
+
+		Box {
+			orientation: horizontal;
+
+			Image {
+				resource: "/org/v1993/NXDumpClient/nxdumptool_icon.jpg";
+				icon-size: large;
+			}
+
+			FlowBox {
+				orientation: horizontal;
+				hexpand: true;
+				selection-mode: none;
+				min-children-per-line: 2;
+
+				FlowBoxChild {
+					Box {
+						orientation: vertical;
+						width-request: 128;
+
+						Label {
+							styles ["title-2"]
+							label: _("Status");
+						}
+
+						Label status_text {
+							use-markup: true;
+							label: bind template.status_text;
+						}
+					}
+				}
+
+				FlowBoxChild {
+					Box {
+						orientation: vertical;
+						Label {
+							styles ["title-2"]
+							label: _("Connection");
+						}
+
+						Label {
+							use-markup: true;
+							label: bind template.connection_speed_text;
+						}
+					}
+				}
+
+				FlowBoxChild {
+					Box {
+						orientation: vertical;
+						width-request: 128;
+
+						Label {
+							styles ["title-2"]
+							label: C_("nxdumptool version", "Version");
+						}
+
+						Label {
+							label: bind template.version_text;
+						}
+					}
+				}
+			}
+		}
+
+		Box progress_box {
+			orientation: vertical;
+			hexpand: true;
+			sensitive: false;
+
+			Label {
+				styles ["title-2"]
+				label: _("Transfer progress");
+			}
+
+			ProgressBar progress_bar {
+				show-text: true;
+				fraction: bind template.transfer_fraction;
+				text: bind template.transfer_text;
+			}
+
+			Label {
+				styles ["title-4"]
+				ellipsize: start;
+				label: bind template.file_name;
+			}
+
+			Label {
+				ellipsize: end;
+				label: bind template.file_name_inner;
+			}
+		}
+	}
+}

@@ -1,0 +1,2 @@
+# Nintendo SDK debugger, which nxdumptool presents itself as
+SUBSYSTEM=="usb", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="3000", TAG+="uaccess"

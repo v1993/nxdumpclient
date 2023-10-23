@@ -1,0 +1,22 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NXDumpClientFileRow: Adw.ActionRow {
+	Box {
+		orientation: horizontal;
+		spacing: 0;
+
+		Button reset_button {
+			styles ["flat"]
+			visible: bind template.allow_reset; // Note: adding `as <bool>` causes a critical after button is clicked. May be a GTK bug.
+			icon-name: "edit-delete-symbolic";
+			tooltip-text: C_("FileRow button", "Reset to default");
+			clicked => $emit_reset();
+		}
+
+		Button button {
+			styles ["flat"]
+			clicked => $select_file();
+		}
+	}
+}

@@ -1,0 +1,16 @@
+data/org.v1993.NXDumpClient.desktop.in
+data/org.v1993.NXDumpClient.appdata.xml.in
+data/org.v1993.NXDumpClient.gschema.xml
+
+src/gtk/help-overlay.blp
+src/widgets/FileRow.vala
+src/widgets/FileRow.blp
+src/main.vala
+src/nxdumpclient.gresource.xml
+src/Window.vala
+src/meson.build
+src/Window.blp
+src/Utils.vala
+src/Application.vala
+src/PreferencesWindow.blp
+src/PreferencesWindow.vala

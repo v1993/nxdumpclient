@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="nxdumpclient">
+  <schema id="org.v1993.NXDumpClient" path="/org/v1993/NXDumpClient/">
+    <key name="dump-path" type="ay">
+      <default>b""</default>
+      <summary>Path to the output folder</summary>
+      <description>
+        Path to the directory where dumps are stored.
+        Empty value corresponds to using default path.
+      </description>
+    </key>
+    <key name="flatten-output" type="b">
+      <default>false</default>
+      <summary>Output directly into dump destination directory</summary>
+      <description>
+        By default, subfolders are always created when requested by nxdumptool.
+        This options forces nxdumpclient to always output single-file dumps into
+        dump directory and reduces nesting for multi-file dumps.
+      </description>
+    </key>
+    <key name="checksum-nca" type="b">
+      <default>true</default>
+      <summary>Compute hashes of NCA files</summary>
+      <description>
+        NCA file names are SHA256 checksums of their contents. This option
+        allows to verify checksums of dumped NCA and NSP files.
+      </description>
+    </key>
+	</schema>
+</schemalist>
