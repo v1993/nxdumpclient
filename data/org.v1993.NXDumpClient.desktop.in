@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=NX Dump Client
-GenericName=Client for dumping over USB with nxdumptool
+GenericName=Dump over USB with nxdumptool
 Exec=nxdumpclient
 Icon=org.v1993.NXDumpClient
 Terminal=false

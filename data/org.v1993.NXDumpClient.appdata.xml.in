@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-	<id>org.v1993.NXDumpClient.desktop</id>
+  <name>NX Dump Client</name>
+	<id>org.v1993.NXDumpClient</id>
+  <summary>Client for dumping over USB with nxdumptool</summary>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
+  <translation type="gettext">nxdumpclient</translation>
   <content_rating type="oars-1.1" />
+  <launchable type="desktop-id">org.v1993.NXDumpClient.desktop</launchable>
+  <url type="homepage">https://github.com/v1993/nxdumpclient</url>
 	<description>
-	  <p>Client for dumping over USB with nxdumptool</p>
+	  <p>Client for dumping over USB with nxdumptool.</p>
 	</description>
+  <screenshots>
+    <screenshot type="default"></screenshot>
+  </screenshots>
+  <releases>
+  </releases>
 </component>
