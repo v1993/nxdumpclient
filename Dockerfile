@@ -2,7 +2,9 @@ ARG UBUNTU_RELEASE=mantic
 
 FROM ubuntu:$UBUNTU_RELEASE AS build-stage
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      git ca-certificates build-essential valac gettext libgtk-4-dev libadwaita-1-dev libgusb-dev meson
+      git ca-certificates build-essential \
+      valac gettext desktop-file-utils \
+      libgtk-4-dev libadwaita-1-dev libgusb-dev meson
 
 COPY . /
 
