@@ -8,7 +8,7 @@ on:
 
 jobs:
   flatpak:
-    name: "Flatpak"
+    name: "build"
     runs-on: ubuntu-latest
 
     strategy:
