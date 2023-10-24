@@ -9,18 +9,23 @@ finish-args:
   - --socket=wayland
   # Switch USB access
   - --device=all
+  # Required for hotplug
+  - --share=network
   # Default dump destination
   - --filesystem=xdg-download
 
 modules:
-  - modules/libusb.json
+  - shared-modules/libusb/libusb.json
   - modules/libgusb.json
+  - modules/libportal.json
   - modules/blueprint-compiler.json
 
   - name: nxdumpclient
     buildsystem: meson
+    builddir: true
     config-opts:
       - -Dudev_rules=disabled
+      - -Duse_libportal=enabled
     sources:
       - type: dir
         path: ..

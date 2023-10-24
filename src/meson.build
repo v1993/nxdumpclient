@@ -25,7 +25,7 @@ nxdc_blueprints = files(
 extra_vala_args = []
 
 nxdc_deps = [
-  dependency('glib-2.0', version: '>=2.70'),
+  dependency('glib-2.0', version: '>=2.76'),
   dependency('gio-2.0'),
   dependency('gtk4', version: '>=4.10'),
   dependency('libadwaita-1', version: '>= 1.4'),
@@ -59,6 +59,10 @@ nxdc_blueprint_tgt = custom_target(
   input: nxdc_blueprint_genlist
 )
 
+# Explicitly depend on blueprints target since valac needs
+# .ui files to be present at build time
+nxdc_deps += declare_dependency(sources: nxdc_blueprint_tgt)
+
 nxdc_blueprints_build_dir = nxdc_blueprint_tgt.full_path() + '.p'
 
 nxdc_sources += gnome.compile_resources('nxdumpclient-resources',
@@ -68,13 +72,14 @@ nxdc_sources += gnome.compile_resources('nxdumpclient-resources',
   source_dir: [ nxdc_blueprints_build_dir ]
 )
 
-executable('nxdumpclient', nxdc_sources,
+executable('nxdumpclient', nxdc_sources, nxdc_blueprint_tgt,
   dependencies: nxdc_deps,
   vala_args: [ '--gresourcesdir', nxdc_blueprints_build_dir, extra_vala_args ],
   install: true,
 
   c_args: [
     '-DGETTEXT_PACKAGE="nxdumpclient"',
-    '-DNXDC_VERSION="@0@"'.format(meson.project_version())
+    '-DNXDC_VERSION="@0@"'.format(meson.project_version()),
+    '-DNXDC_ICONS_PATH="@0@"'.format(get_option('datadir') / 'icons'),
   ],
 )

@@ -1,0 +1,47 @@
+name: Flatpak
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  flatpak:
+    name: "build"
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x86_64
+          - aarch64
+
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-45
+      options: --privileged
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+  
+      - name: Install deps
+        if: ${{ matrix.arch != 'x86_64' }}
+        run: |
+          dnf -y install docker
+  
+      - name: Set up QEMU
+        if: ${{ matrix.arch != 'x86_64' }}
+        id: qemu
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+  
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: nxdumpclient.flatpak
+          manifest-path: flatpak/org.v1993.NXDumpClient.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+          arch: ${{ matrix.arch }}

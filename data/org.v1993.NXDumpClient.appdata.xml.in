@@ -2,6 +2,7 @@
 <component type="desktop">
   <name>NX Dump Client</name>
 	<id>org.v1993.NXDumpClient</id>
+  <developer_name>v19930312</developer_name>
   <summary>Client for dumping over USB with nxdumptool</summary>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
@@ -16,5 +17,12 @@
     <screenshot type="default"></screenshot>
   </screenshots>
   <releases>
+    <release version="0.1.0" date="2023-10-24" />
   </releases>
+  <requires>
+    <internet>offline-only</internet>
+  </requires>
+  <supports>
+    <modalias>usb:v057Ep3000d0100dc00dsc00dp00icFFiscFFipFFin00</modalias>
+  </supports>
 </component>
