@@ -15,7 +15,7 @@ finish-args:
   - --filesystem=xdg-download
 
 modules:
-  - modules/libusb.json
+  - shared-modules/libusb/libusb.json
   - modules/libgusb.json
   - modules/blueprint-compiler.json
 
