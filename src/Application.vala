@@ -117,10 +117,9 @@ namespace NXDumpClient {
 				usb_ctx = new UsbContext();
 
 				// Allow window to show up first
-				Idle.add(() => {
+				Idle.add_once(() => {
 					usb_ctx.enumerate();
-					return Source.REMOVE;
-				}, Priority.DEFAULT_IDLE);
+				});
 			} catch(Error e) {
 				printerr(_("Failed to initialize USB context: %s\n"), e.message);
 				Process.exit(1);

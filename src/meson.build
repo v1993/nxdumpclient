@@ -25,7 +25,7 @@ nxdc_blueprints = files(
 extra_vala_args = []
 
 nxdc_deps = [
-  dependency('glib-2.0', version: '>=2.70'),
+  dependency('glib-2.0', version: '>=2.76'),
   dependency('gio-2.0'),
   dependency('gtk4', version: '>=4.10'),
   dependency('libadwaita-1', version: '>= 1.4'),
