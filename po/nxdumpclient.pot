@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-23 11:44+0300\n"
+"POT-Creation-Date: 2023-10-24 12:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,29 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/org.v1993.NXDumpClient.desktop.in:3 src/Window.blp:7
+#: data/org.v1993.NXDumpClient.desktop.in:3
+#: data/org.v1993.NXDumpClient.appdata.xml.in:3 src/Window.blp:7
 msgid "NX Dump Client"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.desktop.in:4
-#: data/org.v1993.NXDumpClient.appdata.xml.in:8
+msgid "Dump over USB with nxdumptool"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:5
+msgid "v19930312"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:6
 msgid "Client for dumping over USB with nxdumptool"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:72
+msgid "Client for dumping over USB with nxdumptool."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:19
+msgid "NX Dump Tool receiving a file."
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.gschema.xml:6
@@ -111,24 +127,29 @@ msgid "_Keyboard Shortcuts"
 msgstr ""
 
 #: src/Window.blp:54
-msgid "_About NXDumpClient"
+msgid "_About NX Dump Client"
 msgstr ""
 
 #: src/Window.blp:57
 msgid "_Quit"
 msgstr ""
 
-#: src/Application.vala:63
+#: src/Application.vala:67
 msgid "Print application version and exit"
 msgstr ""
 
-#: src/Application.vala:68
-msgid "Client for dumping over USB with nxdumptool."
-msgstr ""
-
-#: src/Application.vala:121
+#: src/Application.vala:124
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
+msgstr ""
+
+#: src/Application.vala:161
+msgid "translator-credits"
+msgstr ""
+
+#: src/Application.vala:168
+msgctxt "credits section header"
+msgid "nxdumptool team"
 msgstr ""
 
 #: src/PreferencesWindow.blp:6

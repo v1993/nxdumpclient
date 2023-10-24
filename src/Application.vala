@@ -156,16 +156,22 @@ namespace NXDumpClient {
         }
 
         private void on_about_action() {
-            string[] developers = { "v19930312" };
-            var about = new Adw.AboutWindow() {
+            var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
                 transient_for = this.active_window,
-                application_name = "NX Dump Client",
-                application_icon = "org.v1993.NXDumpClient",
-                developer_name = "v19930312",
-                version = NXDC_VERSION,
-                developers = developers,
-                copyright = "© 2023 v19930312",
+                translator_credits = _("translator-credits"),
+                developers = {
+					"v19930312"
+				},
+				copyright = "© 2023 v19930312"
             };
+
+ 			about.add_credit_section(C_("credits section header", "nxdumptool team"),
+ 				{
+					"DarkMatterCore",
+					"Whovian9369",
+					"shchmue"
+				}
+ 			);
 
             about.present();
         }
