@@ -17,12 +17,14 @@ finish-args:
 modules:
   - shared-modules/libusb/libusb.json
   - modules/libgusb.json
+  - modules/libportal.json
   - modules/blueprint-compiler.json
 
   - name: nxdumpclient
     buildsystem: meson
     config-opts:
       - -Dudev_rules=disabled
+      - -Duse_libportal=enabled
     sources:
       - type: dir
         path: ..

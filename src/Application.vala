@@ -19,6 +19,7 @@
  */
 
 extern const string NXDC_VERSION;
+extern const string NXDC_ICONS_PATH;
 
 namespace NXDumpClient {
 	/// A convenience method to show errors to user
@@ -37,10 +38,14 @@ namespace NXDumpClient {
 		private UsbContext usb_ctx;
 		private Window? main_window = null;
 
+		#if WITH_LIBPORTAL
+		public Xdp.Portal? portal { get; private set; default = null; }
+		#endif
+
 		public void show_error(string desc, string message) {
-			if (main_window != null) {
+			if (main_window != null && main_window.is_active) {
 				var toast = new Adw.Toast.format("<span color=\"red\">%s</span>: %s", desc, message) {
-					timeout = 10,
+					timeout = 5,
 					priority = HIGH
 				};
 				main_window.show_toast((owned)toast);
@@ -49,7 +54,6 @@ namespace NXDumpClient {
 				notif.set_body(message);
 				notif.set_category("device.error");
 				notif.set_priority(HIGH);
-				// FIXME: icon does not show. Is it on KDE or me?
 				notif.set_icon(new ThemedIcon("dialog-error"));
 				send_notification(null, notif);
 			}
@@ -123,6 +127,19 @@ namespace NXDumpClient {
 			}
 
 			device_list = new ListStore(typeof(UsbDeviceClient));
+
+			#if WITH_LIBPORTAL
+			try {
+				portal = new Xdp.Portal.initable_new();
+			} catch(Error e) {
+				warning("Failed to initialize libportal: %s", e.message);
+			}
+
+			if (Xdp.Portal.running_under_flatpak()) {
+				// Fix About dialog icon
+				Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(NXDC_ICONS_PATH);
+			}
+			#endif
 		}
 
 		private static void unset_main_window(Window win, Application app) {
