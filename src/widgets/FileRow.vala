@@ -44,8 +44,8 @@ private bool transform_select_directory_to_tooltip(Binding bin, Value from, out 
 }
 
 namespace NXDumpClient {
-    [GtkTemplate (ui = "/org/v1993/NXDumpClient/widgets/FileRow.ui")]
-    public class FileRow: Adw.ActionRow {
+	[GtkTemplate (ui = "/org/v1993/NXDumpClient/widgets/FileRow.ui")]
+	public class FileRow: Adw.ActionRow {
 		public File? file { get; set; default = null; }
 		public bool select_directory { get; set; default = false; }
 		public bool allow_reset { get; set; default = false; }

@@ -66,7 +66,7 @@ namespace NXDumpClient {
 			}
 		}
 
-        construct {
+		construct {
 			application_id = "org.v1993.NXDumpClient";
 			flags = DEFAULT_FLAGS;
 
@@ -79,18 +79,18 @@ namespace NXDumpClient {
 			add_main_option_entries(options);
 			set_option_context_summary(_("Client for dumping over USB with nxdumptool."));
 
-            ActionEntry[] action_entries = {
-                { "about", this.on_about_action },
-                { "preferences", this.on_preferences_action },
-                { "quit", this.quit }
-            };
+			ActionEntry[] action_entries = {
+				{ "about", this.on_about_action },
+				{ "preferences", this.on_preferences_action },
+				{ "quit", this.quit }
+			};
 
-            add_action_entries(action_entries, this);
-            set_accels_for_action("app.preferences", {"<primary>p"});
-            set_accels_for_action("app.quit", {"<primary>q"});
-        }
+			add_action_entries(action_entries, this);
+			set_accels_for_action("app.preferences", {"<primary>p"});
+			set_accels_for_action("app.quit", {"<primary>q"});
+		}
 
-        public override int handle_local_options(VariantDict opt) {
+		public override int handle_local_options(VariantDict opt) {
 			if (opt.lookup("version", "b", null)) {
 				print("nxdumpclient %s\n", NXDC_VERSION);
 				return 0;
@@ -111,7 +111,7 @@ namespace NXDumpClient {
 			return -1;
 		}
 
-        public override void startup() {
+		public override void startup() {
 			base.startup();
 
 			settings = new GLib.Settings(application_id);
@@ -173,14 +173,14 @@ namespace NXDumpClient {
 			app.main_window = null;
 		}
 
-        public override void activate() {
-        	base.activate();
-        	if (main_window == null) {
+		public override void activate() {
+			base.activate();
+			if (main_window == null) {
 				main_window = new Window(this);
 				// Syntax sugar kept failing me. This works flawlessly.
 				main_window.connect("signal::unrealize", unset_main_window, this, null);
-            }
-            main_window.present();
+			}
+			main_window.present();
  			#if PROMPT_FOR_UDEV_RULES
  			if (!prompted_for_udev_rules) {
 				var udev_dialog = new UdevRulesDialog() {
@@ -189,17 +189,17 @@ namespace NXDumpClient {
 				udev_dialog.present();
 			}
  			#endif
-        }
+		}
 
-        private void on_about_action() {
-            var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
-                transient_for = this.active_window,
-                translator_credits = _("translator-credits"),
-                developers = {
+		private void on_about_action() {
+			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
+				transient_for = this.active_window,
+				translator_credits = _("translator-credits"),
+				developers = {
 					"v19930312"
 				},
 				copyright = "© 2023 v19930312"
-            };
+			};
 
  			about.add_credit_section(C_("credits section header", "nxdumptool team"),
  				{
@@ -209,15 +209,15 @@ namespace NXDumpClient {
 				}
  			);
 
-            about.present();
-        }
+			about.present();
+		}
 
-        private void on_preferences_action() {
-            var preferences = new PreferencesWindow() {
+		private void on_preferences_action() {
+			var preferences = new PreferencesWindow() {
 				transient_for = this.active_window
 			};
 
 			preferences.present();
-        }
-    }
+		}
+	}
 }
