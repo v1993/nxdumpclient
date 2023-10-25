@@ -4,12 +4,14 @@
     <file preprocess="xml-stripblanks">DeviceStatusRow.ui</file>
     <file preprocess="xml-stripblanks">Window.ui</file>
     <file preprocess="xml-stripblanks">PreferencesWindow.ui</file>
+    <file preprocess="xml-stripblanks">UdevRulesDialog.ui</file>
 
     <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
     <file preprocess="xml-stripblanks">widgets/FileRow.ui</file>
 
-    <file alias="appdata.xml" preprocess="xml-stripblanks">org.v1993.NXDumpClient.appdata.xml</file>
-
     <file>nxdumptool_icon.jpg</file>
+
+    <file alias="appdata.xml" preprocess="xml-stripblanks">org.v1993.NXDumpClient.appdata.xml</file>
+    <file>71-nxdumptool.rules</file>
   </gresource>
 </gresources>

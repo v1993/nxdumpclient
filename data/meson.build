@@ -36,8 +36,7 @@ if compile_schemas.found()
        args: ['--strict', '--dry-run', meson.current_source_dir()])
 endif
 
-#if get_option('udev_rules').enable_auto_if(host_machine.system() == 'linux').enabled()
-if get_option('udev_rules').allowed()
+if get_option('udev_rules') == 'install'
   install_data('71-nxdumptool.rules',
     install_dir: get_option('prefix') / 'lib' / 'udev' / 'rules.d'
   )

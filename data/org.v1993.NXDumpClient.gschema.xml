@@ -26,5 +26,12 @@
         allows to verify checksums of dumped NCA and NSP files.
       </description>
     </key>
+    <key name="prompted-for-udev-rules" type="b">
+      <default>false</default>
+      <summary>Has user closed udev rules prompt</summary>
+      <description>
+        This is only used in cases where udev rules must me manually installed.
+      </description>
+    </key>
 	</schema>
 </schemalist>

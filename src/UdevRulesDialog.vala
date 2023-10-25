@@ -1,4 +1,4 @@
-/* main.vala
+/* UdevRulesDialog.vala
  *
  * Copyright 2023 v1993 <v19930312@gmail.com>
  *
@@ -18,10 +18,27 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-internal string argv0;
+#if PROMPT_FOR_UDEV_RULES
+namespace NXDumpClient {
+	[GtkTemplate (ui = "/org/v1993/NXDumpClient/UdevRulesDialog.ui")]
+	public class UdevRulesDialog: Adw.Window {
+		protected string command_line_for_installation {
+			owned get {
+				var cmd = argv0;
+				#if WITH_LIBPORTAL
+				if (Xdp.Portal.running_under_flatpak()) {
+					cmd = "flatpak run %s".printf(new Application().application_id);
+				}
+				#endif
+				return "%s --print-udev-rules | sudo sh -c 'cat > %s/%s'".printf(cmd, UDEV_RULES_DIR, UDEV_RULES_FILENAME);
+			}
+		}
 
-int main(string[] args) {
-	argv0 = args[0] ?? "nxdumpclient";
-	var app = new NXDumpClient.Application();
-	return app.run(args);
+		[GtkCallback]
+		void confirmed() {
+			new Application().udev_rules_prompt_accepted();
+			close();
+		}
+	}
 }
+#endif

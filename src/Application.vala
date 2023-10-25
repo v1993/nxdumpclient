@@ -41,6 +41,13 @@ namespace NXDumpClient {
 		#if WITH_LIBPORTAL
 		public Xdp.Portal? portal { get; private set; default = null; }
 		#endif
+		#if PROMPT_FOR_UDEV_RULES
+		protected bool prompted_for_udev_rules { get; protected set; default = false; }
+
+		public void udev_rules_prompt_accepted() {
+			prompted_for_udev_rules = true;
+		}
+		#endif
 
 		public void show_error(string desc, string message) {
 			if (main_window != null && main_window.is_active) {
@@ -65,6 +72,7 @@ namespace NXDumpClient {
 
 			OptionEntry[] options = {
 				{ "version", 'v', NONE, NONE, null, _("Print application version and exit") },
+				{ "print-udev-rules", '\0', NONE, NONE, null, _("Print udev rules required for USB access and exit") },
 				{null}
 			};
 
@@ -85,6 +93,18 @@ namespace NXDumpClient {
         public override int handle_local_options(VariantDict opt) {
 			if (opt.lookup("version", "b", null)) {
 				print("nxdumpclient %s\n", NXDC_VERSION);
+				return 0;
+			}
+
+			if (opt.lookup("print-udev-rules", "b", null)) {
+				try {
+					var contents = resources_lookup_data("/org/v1993/NXDumpClient/" + UDEV_RULES_FILENAME, NONE);
+					//var rule_path = Path.build_filename(UDEV_RULES_DIR, UDEV_RULES_FILENAME);
+					print("%s", (string)contents.get_data());
+				} catch(Error e) {
+					printerr("Failed to print udev rules: %s\n", e.message);
+					return 1;
+				}
 				return 0;
 			}
 
@@ -112,6 +132,14 @@ namespace NXDumpClient {
 				DEFAULT,
 				null, null, null, null // A binding issue
 			);
+
+			#if PROMPT_FOR_UDEV_RULES
+			settings.bind_with_mapping("prompted-for-udev-rules",
+				this, "prompted-for-udev-rules",
+				DEFAULT,
+				null, null, null, null // A binding issue
+			);
+			#endif
 
 			try {
 				usb_ctx = new UsbContext();
@@ -153,6 +181,14 @@ namespace NXDumpClient {
 				main_window.connect("signal::unrealize", unset_main_window, this, null);
             }
             main_window.present();
+ 			#if PROMPT_FOR_UDEV_RULES
+ 			if (!prompted_for_udev_rules) {
+				var udev_dialog = new UdevRulesDialog() {
+					transient_for = main_window
+				};
+				udev_dialog.present();
+			}
+ 			#endif
         }
 
         private void on_about_action() {

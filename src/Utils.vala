@@ -19,6 +19,9 @@
  */
 
 namespace NXDumpClient {
+	internal const string UDEV_RULES_DIR = "/etc/udev/rules.d";
+	internal const string UDEV_RULES_FILENAME = "71-nxdumptool.rules";
+
 	string get_default_dump_path() {
 		return Environment.get_user_special_dir(DOWNLOAD) ?? Environment.get_home_dir();
 	}

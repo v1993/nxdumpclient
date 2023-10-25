@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-24 12:48+0300\n"
+"POT-Creation-Date: 2023-10-25 14:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:72
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:80
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
@@ -71,6 +71,14 @@ msgstr ""
 msgid ""
 "NCA file names are SHA256 checksums of their contents. This option allows to "
 "verify checksums of dumped NCA and NSP files."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:31
+msgid "Has user closed udev rules prompt"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:32
+msgid "This is only used in cases where udev rules must me manually installed."
 msgstr ""
 
 #: src/gtk/help-overlay.blp:11
@@ -134,20 +142,24 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
-#: src/Application.vala:67
+#: src/Application.vala:74
 msgid "Print application version and exit"
 msgstr ""
 
-#: src/Application.vala:124
+#: src/Application.vala:75
+msgid "Print udev rules required for USB access and exit"
+msgstr ""
+
+#: src/Application.vala:152
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:161
+#: src/Application.vala:197
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:168
+#: src/Application.vala:204
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""

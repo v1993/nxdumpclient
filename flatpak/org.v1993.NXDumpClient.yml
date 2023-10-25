@@ -24,8 +24,9 @@ modules:
     buildsystem: meson
     builddir: true
     config-opts:
-      - -Dudev_rules=disabled
+      - -Dudev_rules=prompt
       - -Duse_libportal=enabled
+      - -Denforce_build_order=true
     sources:
       - type: dir
         path: ..
