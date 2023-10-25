@@ -40,18 +40,16 @@ namespace NXDumpClient {
 				FileSettingUtils.get, FileSettingUtils.set, (void*)get_default_dump_path, null
 			);
 
-			new Application().settings.bind_with_mapping(
+			new Application().settings.bind(
 				"flatten-output",
 				flatten_output, "active",
-				DEFAULT,
-				null, null, null, null // Again, a binding bug
+				DEFAULT
 			);
 
-			new Application().settings.bind_with_mapping(
+			new Application().settings.bind(
 				"checksum-nca",
 				checksum_nca, "active",
-				DEFAULT,
-				null, null, null, null // Again, a binding bug
+				DEFAULT
 			);
 		}
 

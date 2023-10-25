@@ -121,23 +121,20 @@ namespace NXDumpClient {
 				FileSettingUtils.get, FileSettingUtils.set, (void*)get_default_dump_path, null
 			);
 
-			settings.bind_with_mapping("flatten-output",
+			settings.bind("flatten-output",
 				this, "flatten-output",
-				DEFAULT,
-				null, null, null, null // A binding issue
+				DEFAULT
 			);
 
-			settings.bind_with_mapping("checksum-nca",
+			settings.bind("checksum-nca",
 				this, "checksum-nca",
-				DEFAULT,
-				null, null, null, null // A binding issue
+				DEFAULT
 			);
 
 			#if PROMPT_FOR_UDEV_RULES
-			settings.bind_with_mapping("prompted-for-udev-rules",
+			settings.bind("prompted-for-udev-rules",
 				this, "prompted-for-udev-rules",
-				DEFAULT,
-				null, null, null, null // A binding issue
+				DEFAULT
 			);
 			#endif
 
