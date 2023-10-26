@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.v1993.NXDumpClient
+Exec=@bindir@/nxdumpclient --gapplication-service

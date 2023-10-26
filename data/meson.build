@@ -36,13 +36,22 @@ if compile_schemas.found()
        args: ['--strict', '--dry-run', meson.current_source_dir()])
 endif
 
+dbusconf = configuration_data()
+dbusconf.set('bindir', get_option('prefix') / get_option('bindir'))
+configure_file(
+          input: 'org.v1993.NXDumpClient.service.in',
+         output: 'org.v1993.NXDumpClient.service',
+  configuration: dbusconf,
+        install: true,
+    install_dir: get_option('datadir') / 'dbus-1' / 'services',
+)
+
+
 if get_option('udev_rules') == 'install'
   install_data('71-nxdumptool.rules',
-    install_dir: get_option('prefix') / 'lib' / 'udev' / 'rules.d'
+    install_dir: 'lib' / 'udev' / 'rules.d'
   )
 endif
-
-#subdir('icons')
 
 install_data(
   'icons/hicolor/scalable/apps/org.v1993.NXDumpClient.svg',
