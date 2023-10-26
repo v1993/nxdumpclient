@@ -138,18 +138,6 @@ namespace NXDumpClient {
 			);
 			#endif
 
-			try {
-				usb_ctx = new UsbContext();
-
-				// Allow window to show up first
-				Idle.add_once(() => {
-					usb_ctx.enumerate();
-				});
-			} catch(Error e) {
-				printerr(_("Failed to initialize USB context: %s\n"), e.message);
-				Process.exit(1);
-			}
-
 			device_list = new ListStore(typeof(UsbDeviceClient));
 
 			#if WITH_LIBPORTAL
@@ -172,6 +160,20 @@ namespace NXDumpClient {
 
 		public override void activate() {
 			base.activate();
+			if (usb_ctx == null) {
+				try {
+					usb_ctx = new UsbContext();
+
+					// Allow window to show up first
+					Idle.add_once(() => {
+						usb_ctx.enumerate();
+					});
+				} catch(Error e) {
+					printerr(_("Failed to initialize USB context: %s\n"), e.message);
+					Process.exit(1);
+				}
+			}
+
 			if (main_window == null) {
 				main_window = new Window(this);
 				// Syntax sugar kept failing me. This works flawlessly.
