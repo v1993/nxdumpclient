@@ -21,7 +21,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.1.0" date="2023-10-24" />
+    <release version="0.1.0" date="2023-10-26" />
   </releases>
   <requires>
     <internet>offline-only</internet>
