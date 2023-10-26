@@ -49,14 +49,24 @@ namespace NXDumpClient {
 		}
 		#endif
 
+		private bool should_show_desktop_notification() {
+			return main_window == null || !main_window.is_active;
+		}
+
+		private bool should_show_toast() {
+			return main_window != null;
+		}
+
 		public void show_error(string desc, string message) {
-			if (main_window != null && main_window.is_active) {
+			if (should_show_toast()) {
 				var toast = new Adw.Toast.format("<span color=\"red\">%s</span>: %s", desc, message) {
 					timeout = 5,
 					priority = HIGH
 				};
 				main_window.show_toast((owned)toast);
-			} else {
+			}
+
+			if (should_show_desktop_notification()) {
 				var notif = new Notification(desc);
 				notif.set_body(message);
 				notif.set_category("device.error");
@@ -65,6 +75,109 @@ namespace NXDumpClient {
 				send_notification(null, notif);
 			}
 		}
+
+		internal void device_added(UsbDeviceClient client) {
+			// I assume application outlives all clients. This should hold true.
+			client.connect("signal::transfer-started", on_file_transfer_started, this, null);
+			client.connect("signal::transfer-complete", on_file_transfer_complete, this, null);
+			client.connect("signal::transfer-failed", on_file_transfer_failed, this, null);
+			if (should_show_desktop_notification()) {
+				var notif = new Notification(_( "nxdumptool device connected"));
+				notif.set_category("device.added");
+				send_notification(@"nxdc-device-$(client.dev.get_bus())-$(client.dev.get_address())", notif);
+			}
+		}
+
+		internal void device_removed(GUsb.Device dev) {
+			if (should_show_desktop_notification()) {
+				var notif = new Notification(_("nxdumptool device disconnected"));
+				notif.set_category("device.removed");
+				send_notification(@"nxdc-device-$(dev.get_bus())-$(dev.get_address())", notif);
+			}
+		}
+
+		private static void on_file_transfer_started(UsbDeviceClient dev, File file, bool mass_transfer, Application app) {
+			app.file_transfer_started.begin(file, mass_transfer);
+		}
+
+		private async void file_transfer_started(File file, bool mass_transfer) {
+			try {
+				if (mass_transfer) {
+					return;
+				}
+
+				if (should_show_desktop_notification()) {
+					var notif = new Notification(_("File transfer started"));
+					var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, null); // TODO: cancellable
+					notif.set_body(info.get_display_name());
+					notif.set_category("device");
+					send_notification(@"nxdc-file-$(file.get_uri())", notif);
+				}
+			} catch(Error e) {
+				warning("Error sending notification: %s", e.message);
+			}
+		}
+
+		private static void on_file_transfer_complete(UsbDeviceClient dev, File file, bool mass_transfer, Application app) {
+			app.file_transfer_complete.begin(file, mass_transfer);
+		}
+
+		private async void file_transfer_complete(File file, bool mass_transfer) {
+			try {
+				if (mass_transfer) {
+					return;
+				}
+
+				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, null); // TODO: cancellable
+				var fname = info.get_display_name();
+
+				if (should_show_desktop_notification()) {
+					var notif = new Notification(_("File transfer complete"));
+					notif.set_body(fname);
+					notif.set_category("device");
+					notif.add_button_with_target_value(_("Show in folder"), "app.show-file", new Variant.take_string(file.get_uri()));
+					send_notification(@"nxdc-file-$(file.get_uri())", notif);
+				}
+
+				if (should_show_toast()) {
+					var toast = new Adw.Toast.format(_("Transfer of file “%s” complete"), fname) {
+						button_label = _("Show in folder"),
+						action_name = "app.show-file",
+						action_target = new Variant.take_string(file.get_uri()),
+					};
+					main_window.show_toast((owned)toast);
+				}
+			} catch(Error e) {
+				warning("Error sending notification: %s", e.message);
+			}
+		}
+
+		private static void on_file_transfer_failed(UsbDeviceClient dev, File file, bool cancelled, Application app) {
+			app.file_transfer_failed.begin(file, cancelled);
+		}
+
+		private async void file_transfer_failed(File file, bool cancelled) {
+			try {
+				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, null); // TODO: cancellable
+				var fname = info.get_display_name();
+
+				if (should_show_desktop_notification()) {
+					var notif = new Notification(cancelled ? _("File transfer canceled") : _("File transfer failed"));
+					notif.set_body(fname);
+					notif.set_category("device");
+					send_notification(@"nxdc-file-$(file.get_uri())", notif);
+				}
+
+				if (should_show_toast()) {
+					var toast = new Adw.Toast.format(cancelled ? _("Transfer of file “%s” canceled") : _("Transfer of file “%s” failed"), fname);
+					main_window.show_toast((owned)toast);
+				}
+			} catch(Error e) {
+				warning("Error sending notification: %s", e.message);
+			}
+		}
+
+		// TODO: add "on_transfer_cancelled"
 
 		construct {
 			application_id = "org.v1993.NXDumpClient";
@@ -80,9 +193,13 @@ namespace NXDumpClient {
 			set_option_context_summary(_("Client for dumping over USB with nxdumptool."));
 
 			ActionEntry[] action_entries = {
+				// In-app only
 				{ "about", this.on_about_action },
 				{ "preferences", this.on_preferences_action },
-				{ "quit", this.quit }
+				{ "quit", this.quit },
+
+				// May be invoked externally (e.g. from a notification)
+				{ "show-file", this.on_show_file_action, "s" }
 			};
 
 			add_action_entries(action_entries, this);
@@ -217,6 +334,24 @@ namespace NXDumpClient {
 			};
 
 			preferences.present();
+		}
+
+		private void on_show_file_action(SimpleAction action, Variant? param)
+		requires(param != null && param.is_of_type(VariantType.STRING))
+		{
+			show_file.begin(File.new_for_uri(param.get_string()));
+		}
+
+		private async void show_file(File file) {
+			hold(); // Ensure that we won't exit if invoked without activation
+			try {
+				var launcher = new Gtk.FileLauncher(file);
+				yield launcher.open_containing_folder(main_window, null); // TODO: pass cancellable
+			} catch(Error e) {
+				warning("Failed to show file in directory: %s", e.message);
+			} finally {
+				release();
+			}
 		}
 	}
 }

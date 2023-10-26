@@ -33,10 +33,10 @@ namespace NXDumpClient {
 			update_version();
 			device_signals += Signal.connect(device, "notify::version-string", (Callback)((void*)on_version_changed), this);
 			setup_progress();
-			device_signals += Signal.connect(device, "transfer-started", (Callback)((void*)update_filenames_cb), this);
+			device_signals += Signal.connect(device, "transfer-started", (Callback)((void*)transfer_started_cb), this);
 			device_signals += Signal.connect(device, "transfer-next-inner-file", (Callback)((void*)update_filenames_cb), this);
 			device_signals += Signal.connect(device, "transfer-progress", (Callback)((void*)update_progress_cb), this);
-			device_signals += Signal.connect(device, "transfer-complete", (Callback)((void*)reset_transfer_view_cb), this);
+			device_signals += Signal.connect(device, "transfer-complete", (Callback)((void*)transfer_complete_cb), this);
 			device_signals += Signal.connect(device, "transfer-failed", (Callback)((void*)transfer_failed_cb), this);
 		}
 
@@ -123,6 +123,10 @@ namespace NXDumpClient {
 			);
 		}
 
+		private static void transfer_started_cb(UsbDeviceClient client, File file, bool mass_transfer, DeviceStatusRow row) {
+			row.update_filenames();
+		}
+
 		private static void update_filenames_cb(UsbDeviceClient client, DeviceStatusRow row) {
 			row.update_filenames();
 		}
@@ -134,11 +138,11 @@ namespace NXDumpClient {
 			file_name_inner = device.transfer_file_name_inner;
 		}
 
-		private static void transfer_failed_cb(UsbDeviceClient client, bool cancelled, DeviceStatusRow row) {
+		private static void transfer_failed_cb(UsbDeviceClient client, File file, bool cancelled, DeviceStatusRow row) {
 			row.reset_transfer_view();
 		}
 
-		private static void reset_transfer_view_cb(UsbDeviceClient client, DeviceStatusRow row) {
+		private static void transfer_complete_cb(UsbDeviceClient client, File file, bool mass_transfer, DeviceStatusRow row) {
 			row.reset_transfer_view();
 		}
 

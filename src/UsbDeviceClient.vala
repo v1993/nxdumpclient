@@ -51,6 +51,7 @@ namespace NXDumpClient {
 		int64 total_size; ///< With header
 		int64 transferred_size; ///< Without header
 		int64 header_size;
+		File file;
 		FileOutputStream ostream;
 	}
 
@@ -80,6 +81,22 @@ namespace NXDumpClient {
 		} catch(Error e) {
 			return new UsbDeviceProtocolError.IO_ERROR(e.message);
 		}
+	}
+
+	// I've discussed this on nxdumptool discord; newer ABI should include
+	private bool is_mass_transfer_path(string path) {
+		const string[] PATHS = {
+			"/NCA FS/User/Extracted",
+			"/NCA FS/System/Extracted",
+		};
+
+		foreach(unowned var prefix in PATHS) {
+			if (path.has_prefix(prefix)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -122,7 +139,7 @@ namespace NXDumpClient {
 		return Path.skip_root(path) ?? path;
 	}
 
-	private async FileOutputStream open_dump_target(string filepath_utf8, int64 file_size, Cancellable? cancellable = null) throws Error {
+	private async File get_dump_target(string filepath_utf8, int64 file_size, Cancellable? cancellable = null) throws Error {
 		var main_dir = new Application().destination_directory;
 		var filepath = device_to_relative_path(Filename.from_utf8(filepath_utf8, -1, null, null));
 
@@ -130,7 +147,7 @@ namespace NXDumpClient {
 		var dest_dir = dest_file.get_parent();
 		yield create_directory_with_parents_async(dest_dir, cancellable);
 
-		var info = yield dest_dir.query_info_async(FileAttribute.FILESYSTEM_FREE, NONE, Priority.DEFAULT, cancellable);
+		var info = yield dest_dir.query_filesystem_info_async(FileAttribute.FILESYSTEM_FREE, Priority.DEFAULT, cancellable);
 
 		if (info.has_attribute(FileAttribute.FILESYSTEM_FREE)) {
 			var free_space = info.get_attribute_uint64(FileAttribute.FILESYSTEM_FREE);
@@ -139,11 +156,10 @@ namespace NXDumpClient {
 				throw new IOError.NO_SPACE(_("Not enough space for dump (%s required)"), format_size(file_size));
 			}
 		} else {
-			// Strangely, this always happens for me
 			debug("Can't query free space");
 		}
 
-		return yield dest_file.replace_async(null, false, REPLACE_DESTINATION, Priority.DEFAULT, cancellable);
+		return dest_file;
 	}
 
 	/**
@@ -157,7 +173,6 @@ namespace NXDumpClient {
 		public string? version_string { get; private set; default = null; }
 
 		// User-visible, so in NSP mode they reflect status of the whole NSP
-		// TODO: implement
 		public string transfer_file_name { get; private set; default = ""; }
 		public string transfer_file_name_inner { get; private set; default = ""; } // Used in NSP mode
 		public int64 transfer_total_bytes { get; private set; default = 0; }
@@ -210,14 +225,14 @@ namespace NXDumpClient {
 			usb_handler.begin();
 		}
 
-		public signal void transfer_started();
+		public signal void transfer_started(File file, bool mass_transfer);
 		public signal void transfer_next_inner_file(); // Used in NSP mode
 		public signal void transfer_progress();
-		public virtual signal void transfer_complete() {
+		public virtual signal void transfer_complete(File file, bool mass_transfer) {
 			nsp_dump_status = null;
 			status = CONNECTED;
 		}
-		public virtual signal void transfer_failed(bool cancelled) {
+		public virtual signal void transfer_failed(File file, bool cancelled) {
 			nsp_dump_status = null;
 			status = CONNECTED;
 		}
@@ -285,7 +300,7 @@ namespace NXDumpClient {
 				// Expected on device disconnect
 			} catch(Error e) {
 				if (nsp_dump_status != null) {
-					transfer_failed.emit(false);
+					transfer_failed.emit(nsp_dump_status.file, false);
 				}
 
 				report_error("Error during device communication", e.message);
@@ -357,12 +372,15 @@ namespace NXDumpClient {
 			}
 
 			var filename = (string)istream.read_bytes(0x301, cancellable).get_data();
+			File file;
 			FileOutputStream ostream;
 
 			try {
 				if (nsp_dump_status == null) {
-					ostream = yield open_dump_target(filename, file_size, cancellable);
+					file = yield get_dump_target(filename, file_size, cancellable);
+					ostream = yield file.replace_async(null, false, REPLACE_DESTINATION, Priority.DEFAULT, cancellable);
 				} else {
+					file = nsp_dump_status.file;
 					ostream = nsp_dump_status.ostream;
 				}
 			} catch(Error e) {
@@ -370,8 +388,8 @@ namespace NXDumpClient {
 			}
 
 			if (nsp_header_size > 0) {
-				if (status == TRANSFER) {
-					transfer_failed.emit(false);
+				if (nsp_dump_status != null) {
+					transfer_failed.emit(nsp_dump_status.file, false);
 					throw new UsbDeviceProtocolError.MALFORMED_COMMAND("Unexpected NSP start command");
 				}
 
@@ -396,11 +414,12 @@ namespace NXDumpClient {
 					total_size = file_size,
 					transferred_size = 0,
 					header_size = nsp_header_size,
+					file = file,
 					ostream = ostream
 				};
 
 				yield send_status_success();
-				transfer_started.emit();
+				transfer_started.emit(file, false);
 				debug("Entered NSP mode");
 				return;
 			}
@@ -425,7 +444,7 @@ namespace NXDumpClient {
 					thaw_notify();
 				}
 
-				transfer_started.emit();
+				transfer_started.emit(file, is_mass_transfer_path(filename));
 			} else {
 				transfer_file_name_inner = filename;
 				transfer_next_inner_file.emit();
@@ -471,7 +490,8 @@ namespace NXDumpClient {
 						) {
 							// Transfer canceled
 							debug("Transfer canceled");
-							transfer_failed.emit(true);
+							yield ostream.close_async(Priority.DEFAULT, cancellable);
+							transfer_failed.emit(file, true);
 							yield send_status_success();
 							return;
 						}
@@ -493,7 +513,7 @@ namespace NXDumpClient {
 
 				debug("File transfer finished");
 			} catch(Error e) {
-				transfer_failed.emit(false);
+				transfer_failed.emit(file, false);
 				// Use error_to_recoverable once error handling during transfer is used
 				throw e;
 			}
@@ -504,7 +524,7 @@ namespace NXDumpClient {
 					transfer_progress.emit();
 					yield ostream.close_async(Priority.DEFAULT, cancellable);
 					// In NSP mode it is emitted from nsp_header
-					transfer_complete.emit();
+					transfer_complete.emit(file, is_mass_transfer_path(filename));
 				} else {
 					transfer_file_name_inner = "";
 					transfer_next_inner_file.emit();
@@ -528,7 +548,7 @@ namespace NXDumpClient {
 				yield send_status_success();
 			} catch(Error e) {
 				// Status is expected at the end of transmission, so we can make errors recoverable at this point
-				transfer_failed.emit(false);
+				transfer_failed.emit(file, false);
 				throw error_to_recoverable(e);
 			}
 		}
@@ -552,18 +572,20 @@ namespace NXDumpClient {
 
 				var ostream = nsp_dump_status.ostream;
 				ostream.seek(0, SET, cancellable);
+				debug("Writing header");
 				yield ostream.write_all_async(header, Priority.DEFAULT, cancellable, null);
 				transfer_current_bytes = transfer_total_bytes;
 				transfer_progress.emit();
+				debug("Closing file");
 				yield ostream.close_async(Priority.DEFAULT, cancellable);
+				debug("File closed");
 
 				yield send_status_success();
+				transfer_complete.emit(nsp_dump_status.file, false);
 			} catch(Error e) {
-				transfer_failed.emit(false);
+				transfer_failed.emit(nsp_dump_status.file, false);
 				throw error_to_recoverable(e);
 			}
-
-			transfer_complete.emit();
 		}
 
 		private DataInputStream make_input_stream(uint8[] data) {
