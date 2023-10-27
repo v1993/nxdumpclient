@@ -33,5 +33,13 @@
         This is only used in cases where udev rules must me manually installed.
       </description>
     </key>
+    <key name="allow-background" type="b">
+      <default>false</default>
+      <summary>If application should continue running in background without a window</summary>
+      <description>
+        Desktop notifications are used to communicate status in this case. Pass `--background` when this option is enabled
+        to launch without a window.
+      </description>
+    </key>
 	</schema>
 </schemalist>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 19:26+0300\n"
+"POT-Creation-Date: 2023-10-27 17:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:193
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:212
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
@@ -79,6 +79,16 @@ msgstr ""
 
 #: data/org.v1993.NXDumpClient.gschema.xml:32
 msgid "This is only used in cases where udev rules must me manually installed."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:38
+msgid "If application should continue running in background without a window"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:39
+msgid ""
+"Desktop notifications are used to communicate status in this case. Pass `--"
+"background` when this option is enabled to launch without a window."
 msgstr ""
 
 #: src/gtk/help-overlay.blp:11
@@ -142,67 +152,72 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
-#: src/Application.vala:85
+#: src/Application.vala:105
 msgid "nxdumptool device connected"
 msgstr ""
 
-#: src/Application.vala:93
+#: src/Application.vala:113
 msgid "nxdumptool device disconnected"
 msgstr ""
 
-#: src/Application.vala:110
+#: src/Application.vala:130
 msgid "File transfer started"
 msgstr ""
 
-#: src/Application.vala:135
+#: src/Application.vala:155
 msgid "File transfer complete"
 msgstr ""
 
-#: src/Application.vala:138 src/Application.vala:144
+#: src/Application.vala:158 src/Application.vala:164
 msgid "Show in folder"
 msgstr ""
 
-#: src/Application.vala:143
+#: src/Application.vala:163
 #, c-format
 msgid "Transfer of file “%s” complete"
 msgstr ""
 
-#: src/Application.vala:165
+#: src/Application.vala:185
 msgid "File transfer canceled"
 msgstr ""
 
-#: src/Application.vala:165
+#: src/Application.vala:185
 msgid "File transfer failed"
 msgstr ""
 
-#: src/Application.vala:172
+#: src/Application.vala:192
 #, c-format
 msgid "Transfer of file “%s” canceled"
 msgstr ""
 
-#: src/Application.vala:172
+#: src/Application.vala:192
 #, c-format
 msgid "Transfer of file “%s” failed"
 msgstr ""
 
-#: src/Application.vala:187
-msgid "Print application version and exit"
+#: src/Application.vala:205
+msgid ""
+"Launch without a visible window if allowed to in settings, exit otherwise"
 msgstr ""
 
-#: src/Application.vala:188
+#: src/Application.vala:206
 msgid "Print udev rules required for USB access and exit"
 msgstr ""
 
-#: src/Application.vala:289
+#: src/Application.vala:207
+msgid "Print application version and exit"
+msgstr ""
+
+#: src/Application.vala:331
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:313
+#: src/Application.vala:391
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:320
+#: src/Application.vala:398
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""
@@ -212,35 +227,55 @@ msgid "General settings"
 msgstr ""
 
 #: src/PreferencesWindow.blp:9
-msgid "Dump output options"
+msgctxt "settings group"
+msgid "Application"
 msgstr ""
 
 #: src/PreferencesWindow.blp:12
 msgctxt "setting"
-msgid "Destination directory"
+msgid "Run in background"
+msgstr ""
+
+#: src/PreferencesWindow.blp:13
+msgid "Do not exit when main window is closed (use menu to quit)"
 msgstr ""
 
 #: src/PreferencesWindow.blp:18
+msgctxt "settings group"
+msgid "Dump output"
+msgstr ""
+
+#: src/PreferencesWindow.blp:21
+msgctxt "setting"
+msgid "Destination directory"
+msgstr ""
+
+#: src/PreferencesWindow.blp:27
 msgctxt "dialog title"
 msgid "Dump destination directory"
 msgstr ""
 
-#: src/PreferencesWindow.blp:23
+#: src/PreferencesWindow.blp:32
 msgctxt "setting"
 msgid "Flatten dump directory"
 msgstr ""
 
-#: src/PreferencesWindow.blp:24
+#: src/PreferencesWindow.blp:33
 msgid "Avoid creating subfolders unless necessary"
 msgstr ""
 
-#: src/PreferencesWindow.blp:28
+#: src/PreferencesWindow.blp:37
 msgctxt "setting"
 msgid "Verify NCA checksums"
 msgstr ""
 
-#: src/PreferencesWindow.blp:29
+#: src/PreferencesWindow.blp:38
 msgid ""
 "Extra integrity verification but will error out with non-standard dump "
 "options"
+msgstr ""
+
+#: src/PreferencesWindow.vala:116
+msgctxt "reason string for background activity"
+msgid "Dumping applications in background"
 msgstr ""

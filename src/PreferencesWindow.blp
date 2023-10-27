@@ -6,7 +6,16 @@ template $NXDumpClientPreferencesWindow: Adw.PreferencesWindow {
 		title: _("General settings");
 
 		Adw.PreferencesGroup {
-			title: _("Dump output options");
+			title: C_("settings group", "Application");
+
+			Adw.SwitchRow allow_background_row {
+				title: C_("setting", "Run in background");
+				subtitle: _("Do not exit when main window is closed (use menu to quit)");
+			}
+		}
+
+		Adw.PreferencesGroup {
+			title: C_("settings group", "Dump output");
 
 			$NXDumpClientFileRow destination_directory {
 				title: C_("setting", "Destination directory");
