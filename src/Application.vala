@@ -387,7 +387,7 @@ namespace NXDumpClient {
 
 		private void on_about_action() {
 			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
-				transient_for = this.active_window,
+				transient_for = main_window,
 				translator_credits = _("translator-credits"),
 				developers = {
 					"v19930312"
@@ -408,7 +408,7 @@ namespace NXDumpClient {
 
 		private void on_preferences_action() {
 			var preferences = new PreferencesWindow() {
-				transient_for = this.active_window
+				transient_for = main_window
 			};
 
 			preferences.present();
