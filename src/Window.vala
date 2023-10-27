@@ -34,25 +34,21 @@ namespace NXDumpClient {
 			);
 		}
 
-		ulong content_selector_signal = 0;
-
-		private static void select_child_cb(ListStore store, uint position, uint removed, uint added, Window win) {
-			win.select_child(store);
+		~Window() {
+			debug("Window finalized");
 		}
 
-		private void select_child(ListStore store) {
-			content_selector.set_visible_child_name(store.n_items == 0 ? "placeholder" : "devlist");
+		private void select_child(ListModel model, uint position, uint removed, uint added)
+		requires(model is ListStore)
+		{
+			content_selector.set_visible_child_name(((ListStore)model).n_items == 0 ? "placeholder" : "devlist");
 		}
 
 		construct {
 			unowned var devlist = new Application().device_list;
-			content_selector_signal = Signal.connect(devlist, "items-changed", (Callback)((void*)select_child_cb), this);
-			select_child(devlist);
+			devlist.items_changed.connect(this.select_child);
+			select_child(devlist, 0, 0, 0);
 			devices_model = new Gtk.NoSelection(devlist);
-		}
-
-		~Window() {
-			new Application().device_list.disconnect(content_selector_signal);
 		}
 
 		public void show_toast(owned Adw.Toast toast) {

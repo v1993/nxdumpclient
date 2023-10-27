@@ -77,10 +77,9 @@ namespace NXDumpClient {
 		}
 
 		internal void device_added(UsbDeviceClient client) {
-			// I assume application outlives all clients. This should hold true.
-			client.connect("signal::transfer-started", on_file_transfer_started, this, null);
-			client.connect("signal::transfer-complete", on_file_transfer_complete, this, null);
-			client.connect("signal::transfer-failed", on_file_transfer_failed, this, null);
+			client.transfer_started.connect(this.on_file_transfer_started);
+			client.transfer_complete.connect(this.on_file_transfer_complete);
+			client.transfer_failed.connect(this.on_file_transfer_failed);
 			if (should_show_desktop_notification()) {
 				var notif = new Notification(_( "nxdumptool device connected"));
 				notif.set_category("device.added");
@@ -96,8 +95,8 @@ namespace NXDumpClient {
 			}
 		}
 
-		private static void on_file_transfer_started(UsbDeviceClient dev, File file, bool mass_transfer, Application app) {
-			app.file_transfer_started.begin(file, mass_transfer);
+		private void on_file_transfer_started(UsbDeviceClient dev, File file, bool mass_transfer) {
+			file_transfer_started.begin(file, mass_transfer);
 		}
 
 		private async void file_transfer_started(File file, bool mass_transfer) {
@@ -118,8 +117,8 @@ namespace NXDumpClient {
 			}
 		}
 
-		private static void on_file_transfer_complete(UsbDeviceClient dev, File file, bool mass_transfer, Application app) {
-			app.file_transfer_complete.begin(file, mass_transfer);
+		private void on_file_transfer_complete(UsbDeviceClient dev, File file, bool mass_transfer) {
+			file_transfer_complete.begin(file, mass_transfer);
 		}
 
 		private async void file_transfer_complete(File file, bool mass_transfer) {
@@ -152,8 +151,8 @@ namespace NXDumpClient {
 			}
 		}
 
-		private static void on_file_transfer_failed(UsbDeviceClient dev, File file, bool cancelled, Application app) {
-			app.file_transfer_failed.begin(file, cancelled);
+		private void on_file_transfer_failed(UsbDeviceClient dev, File file, bool cancelled) {
+			file_transfer_failed.begin(file, cancelled);
 		}
 
 		private async void file_transfer_failed(File file, bool cancelled) {
@@ -272,8 +271,10 @@ namespace NXDumpClient {
 			#endif
 		}
 
-		private static void unset_main_window(Window win, Application app) {
-			app.main_window = null;
+		private void unset_main_window(Gtk.Widget win) {
+			// Catch nasty typing problems
+			assert(win is Window && (Window)win == main_window);
+			main_window = null;
 		}
 
 		public override void activate() {
@@ -294,8 +295,8 @@ namespace NXDumpClient {
 
 			if (main_window == null) {
 				main_window = new Window(this);
-				// Syntax sugar kept failing me. This works flawlessly.
-				main_window.connect("signal::unrealize", unset_main_window, this, null);
+				// Typing hiccups prevent syntax sugar from doing its job nicely here.
+				((Gtk.Widget)main_window).unrealize.connect(this.unset_main_window);
 			}
 			main_window.present();
  			#if PROMPT_FOR_UDEV_RULES
