@@ -19,7 +19,7 @@
  */
 
 namespace NXDumpClient {
-	[GtkTemplate (ui = "/org/v1993/NXDumpClient/DeviceStatusRow.ui")]
+	[GtkTemplate (ui = "/org/v1993/NXDumpClient/widgets/DeviceStatusRow.ui")]
 	class DeviceStatusRow: Adw.Bin {
 		protected UsbDeviceClient? device { get; set; default = null; }
 

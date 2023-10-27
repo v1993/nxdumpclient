@@ -4,7 +4,6 @@ nxdc_sources_native = [
   'main.vala',
 
   'Application.vala',
-  'DeviceStatusRow.vala',
   'Window.vala',
   'PreferencesWindow.vala',
   'UdevRulesDialog.vala',
@@ -13,17 +12,18 @@ nxdc_sources_native = [
   'UsbDeviceOpener.vala',
   'Utils.vala',
 
+  'widgets/DeviceStatusRow.vala',
   'widgets/FileRow.vala',
 ]
 
 nxdc_blueprints = files(
-  'DeviceStatusRow.blp',
   'Window.blp',
   'PreferencesWindow.blp',
   'UdevRulesDialog.blp',
 
   'gtk/help-overlay.blp',
-  'widgets/FileRow.blp'
+  'widgets/DeviceStatusRow.blp',
+  'widgets/FileRow.blp',
 )
 
 extra_vala_args = []

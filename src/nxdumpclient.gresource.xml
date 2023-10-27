@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/v1993/NXDumpClient">
-    <file preprocess="xml-stripblanks">DeviceStatusRow.ui</file>
     <file preprocess="xml-stripblanks">Window.ui</file>
     <file preprocess="xml-stripblanks">PreferencesWindow.ui</file>
     <file preprocess="xml-stripblanks">UdevRulesDialog.ui</file>
 
     <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
+    <file preprocess="xml-stripblanks">widgets/DeviceStatusRow.ui</file>
     <file preprocess="xml-stripblanks">widgets/FileRow.ui</file>
 
     <file>nxdumptool_icon.jpg</file>
