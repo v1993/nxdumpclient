@@ -35,6 +35,8 @@ namespace NXDumpClient {
 		[GtkChild]
 		private unowned Adw.SwitchRow allow_background_row;
 
+		private Cancellable? cancellable = null;
+
 		#if WITH_LIBPORTAL
 		// Note: unused if not running under sandbox
 		protected bool allow_background { get; set; }
@@ -44,8 +46,17 @@ namespace NXDumpClient {
 			typeof(NXDumpClient.FileRow).ensure();
 		}
 
+		void on_unrealized() {
+			cancellable.cancel();
+		}
+
 		construct {
 			var app = new Application();
+			cancellable = new Cancellable();
+			app.cancellable.connect(cancellable.cancel);
+			// Cancel all pending operations once this window is closed to avoid references sticking around
+			((Gtk.Widget)this).unrealize.connect(on_unrealized);
+
 			app.settings.bind_with_mapping(
 				"dump-path",
 				destination_directory, "file",
@@ -103,8 +114,7 @@ namespace NXDumpClient {
 			try {
 				if (allow_background_row.active && !allow_background) {
 					// TODO: split into a separate method when implementing autostart support
-					var app = new Application();
-					var? portal = app.portal;
+					var? portal = new Application().portal;
 					if (portal == null) {
 						// It's hopeless
 						return;
@@ -116,7 +126,7 @@ namespace NXDumpClient {
 						C_("reason string for background activity", "Dumping applications in background"),
 						null, // Binding issue, not our bug (fix PRed)
 						NONE,
-						app.cancellable
+						cancellable
 					);
 				}
 			} catch (IOError.CANCELLED e) {
