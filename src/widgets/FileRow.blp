@@ -2,6 +2,8 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NXDumpClientFileRow: Adw.ActionRow {
+	activatable-widget: button;
+
 	Box {
 		orientation: horizontal;
 		spacing: 0;
@@ -17,6 +19,7 @@ template $NXDumpClientFileRow: Adw.ActionRow {
 		Button button {
 			styles ["flat"]
 			clicked => $select_file();
+			focusable: false;
 		}
 	}
 }
