@@ -33,7 +33,9 @@ namespace NXDumpClient {
 		public File destination_directory { get; protected set; }
 		public bool flatten_output { get; protected set; }
 		public bool checksum_nca { get; protected set; }
+
 		public ListStore device_list { get; private set; }
+		public Cancellable cancellable { get; private set; default = new Cancellable(); }
 
 		private UsbContext usb_ctx;
 		private Window? main_window = null;
@@ -50,11 +52,11 @@ namespace NXDumpClient {
 		#endif
 
 		private bool should_show_desktop_notification() {
-			return main_window == null || !main_window.is_active;
+			return !cancellable.is_cancelled() && (main_window == null || !main_window.is_active);
 		}
 
 		private bool should_show_toast() {
-			return main_window != null;
+			return !cancellable.is_cancelled() && main_window != null;
 		}
 
 		public void show_error(string desc, string message) {
@@ -78,6 +80,7 @@ namespace NXDumpClient {
 
 		internal void device_added(UsbDeviceClient client) {
 			client.transfer_started.connect(this.on_file_transfer_started);
+			client.transfer_got_empty_file.connect(this.on_file_transfer_complete);
 			client.transfer_complete.connect(this.on_file_transfer_complete);
 			client.transfer_failed.connect(this.on_file_transfer_failed);
 			if (should_show_desktop_notification()) {
@@ -107,7 +110,7 @@ namespace NXDumpClient {
 
 				if (should_show_desktop_notification()) {
 					var notif = new Notification(_("File transfer started"));
-					var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, null); // TODO: cancellable
+					var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, cancellable);
 					notif.set_body(info.get_display_name());
 					notif.set_category("device");
 					send_notification(@"nxdc-file-$(file.get_uri())", notif);
@@ -127,7 +130,7 @@ namespace NXDumpClient {
 					return;
 				}
 
-				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, null); // TODO: cancellable
+				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, cancellable);
 				var fname = info.get_display_name();
 
 				if (should_show_desktop_notification()) {
@@ -157,7 +160,7 @@ namespace NXDumpClient {
 
 		private async void file_transfer_failed(File file, bool cancelled) {
 			try {
-				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, null); // TODO: cancellable
+				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, cancellable);
 				var fname = info.get_display_name();
 
 				if (should_show_desktop_notification()) {
@@ -175,8 +178,6 @@ namespace NXDumpClient {
 				warning("Error sending notification: %s", e.message);
 			}
 		}
-
-		// TODO: add "on_transfer_cancelled"
 
 		construct {
 			application_id = "org.v1993.NXDumpClient";
@@ -309,6 +310,14 @@ namespace NXDumpClient {
  			#endif
 		}
 
+		public override void shutdown() {
+			// Cancel pending operations
+			cancellable.cancel();
+			// Let async handlers that registered themselves at the previous step run
+			MainContext.default().iteration(false);
+			base.shutdown();
+		}
+
 		private void on_about_action() {
 			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
 				transient_for = this.active_window,
@@ -348,7 +357,7 @@ namespace NXDumpClient {
 			hold(); // Ensure that we won't exit if invoked without activation
 			try {
 				var launcher = new Gtk.FileLauncher(file);
-				yield launcher.open_containing_folder(main_window, null); // TODO: pass cancellable
+				yield launcher.open_containing_folder(main_window, cancellable);
 			} catch(Error e) {
 				warning("Failed to show file in directory: %s", e.message);
 			} finally {

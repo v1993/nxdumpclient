@@ -46,9 +46,10 @@ namespace NXDumpClient {
 				}
 
 				debug("Detected a suitable device! Product string: %s", dev.get_string_descriptor(dev.get_product_index()));
-				var client = new UsbDeviceClient((owned)opener);
-				new Application().device_list.append(client);
-				new Application().device_added(client);
+				var app = new Application();
+				var client = new UsbDeviceClient((owned)opener, app.cancellable);
+				app.device_list.append(client);
+				app.device_added(client);
 			} catch(GUsb.DeviceError.NO_DEVICE e) {
 				// Not really a problem - device was disconnected during setup
 			} catch(Error e) {

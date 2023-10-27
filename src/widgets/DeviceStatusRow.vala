@@ -34,6 +34,7 @@ namespace NXDumpClient {
 			device_signals += device.notify["version-string"].connect(this.on_version_changed);
 			setup_progress();
 			device_signals += device.transfer_started.connect(this.transfer_started_cb);
+			// Empty files are not watched for
 			device_signals += device.transfer_next_inner_file.connect(this.update_filenames_cb);
 			device_signals += device.transfer_progress.connect(this.update_progress_cb);
 			device_signals += device.transfer_complete.connect(this.transfer_complete_cb);

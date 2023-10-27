@@ -168,7 +168,7 @@ namespace NXDumpClient {
 	class UsbDeviceClient: Object {
 		public UsbDeviceOpener devopener { private get; construct; }
 		public GUsb.Device dev { get { return devopener.dev; } }
-		public Cancellable? cancellable { get; set; } // TODO: actually set it
+		public Cancellable? cancellable { get; construct; }
 		public UsbDeviceClientStatus status { get; private set; default = UNINITIALIZED; }
 		public string? version_string { get; private set; default = null; }
 
@@ -186,13 +186,27 @@ namespace NXDumpClient {
 			}
 		} }
 
+		public signal void transfer_started(File file, bool mass_transfer);
+		public signal void transfer_got_empty_file(File file, bool mass_transfer);
+		public signal void transfer_next_inner_file(); // Used in NSP mode
+		public signal void transfer_progress();
+		public virtual signal void transfer_complete(File file, bool mass_transfer) {
+			nsp_dump_status = null;
+			status = CONNECTED;
+		}
+		// MAY be issued without prior `transfer_started` if creating empty file failed
+		public virtual signal void transfer_failed(File file, bool cancelled) {
+			nsp_dump_status = null;
+			status = CONNECTED;
+		}
+
 		private GUsb.Interface iface = null;
 		private GUsb.Endpoint endpoint_input = null;
 		private GUsb.Endpoint endpoint_output = null;
 		private NspDumpStatus? nsp_dump_status = null;
 
-		public UsbDeviceClient(owned UsbDeviceOpener devopener_) throws Error {
-			Object(devopener: (owned)devopener_);
+		public UsbDeviceClient(owned UsbDeviceOpener devopener_, Cancellable? cancellable_ = null) throws Error {
+			Object(devopener: (owned)devopener_, cancellable: cancellable_);
 			setup();
 		}
 
@@ -223,18 +237,6 @@ namespace NXDumpClient {
 			}
 
 			usb_handler.begin();
-		}
-
-		public signal void transfer_started(File file, bool mass_transfer);
-		public signal void transfer_next_inner_file(); // Used in NSP mode
-		public signal void transfer_progress();
-		public virtual signal void transfer_complete(File file, bool mass_transfer) {
-			nsp_dump_status = null;
-			status = CONNECTED;
-		}
-		public virtual signal void transfer_failed(File file, bool cancelled) {
-			nsp_dump_status = null;
-			status = CONNECTED;
 		}
 
 		private async void usb_handler() {
@@ -425,9 +427,17 @@ namespace NXDumpClient {
 			}
 
 			if (file_size == 0) {
-				// TODO: signal success to user nonetheless?
-				yield send_status_success();
-				return;
+				try {
+					if (nsp_dump_status == null) {
+						yield ostream.close_async(Priority.DEFAULT, cancellable);
+						transfer_got_empty_file.emit(file, is_mass_transfer_path(filename));
+					}
+					yield send_status_success();
+					return;
+				} catch(Error e) {
+					transfer_failed.emit(file, false);
+					throw error_to_recoverable(e);
+				}
 			}
 
 			// Enter file transfer mode
