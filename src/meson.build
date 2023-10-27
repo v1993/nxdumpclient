@@ -112,7 +112,7 @@ executable('nxdumpclient', nxdc_sources,
   c_args: [
     '-DGETTEXT_PACKAGE="nxdumpclient"',
     '-DNXDC_VERSION="@0@"'.format(meson.project_version()),
-    '-DNXDC_ICONS_PATH="@0@"'.format(get_option('datadir') / 'icons'),
+    '-DNXDC_ICONS_PATH="@0@"'.format(get_option('prefix') / get_option('datadir') / 'icons'),
   ],
 )
 

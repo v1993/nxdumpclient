@@ -266,6 +266,7 @@ namespace NXDumpClient {
 
 			if (Xdp.Portal.running_under_flatpak()) {
 				// Fix About dialog icon
+				debug("Adding to icons path: %s", NXDC_ICONS_PATH);
 				Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(NXDC_ICONS_PATH);
 			}
 			#endif
