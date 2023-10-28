@@ -3,8 +3,7 @@ name: Release
 on:
   workflow_run:
     workflows: [Flatpak]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
   release:
