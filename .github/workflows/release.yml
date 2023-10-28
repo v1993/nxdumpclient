@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows:
+      - Flatpak
+    types:
+      - success
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    #if: startsWith(github.ref, 'refs/tags/')
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: dawidd6/action-download-artifact@v2.28.0
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: Flatpak
+          path: artifacts
+
+      - name: List artifacts to be published
+        shell: bash
+        run: |
+          find artifacts/
+
+      - name: Upload artifacts to GitHub release
+        # TODO: remove, uncomment the job-wide one
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*
