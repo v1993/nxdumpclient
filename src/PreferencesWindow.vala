@@ -127,14 +127,21 @@ namespace NXDumpClient {
 				DEFAULT
 			);
 
-			// Special handling is always required for autostart
+			// Special handling is needed on native backend too
 			app.settings.bind(
 				"autostart-enabled",
 				autostart_enabled_row, "active",
-				GET | NO_SENSITIVITY
+				GET | NO_SENSITIVITY // TODO: account for setting writablitiy manually
 			);
-			// TODO: account for setting writablitiy
-			autostart_enabled_row.notify["active"].connect(this.autostart_toggle_changed);
+
+			#if WITH_LIBPORTAL
+			if (FORCE_LIBPORTAL || Xdp.Portal.running_under_sandbox()) {
+				autostart_enabled_row.notify["active"].connect(this.request_background);
+			} else
+			#endif
+			{
+				autostart_enabled_row.notify["active"].connect(this.set_autostart_native);
+			}
 		}
 
 		[GtkCallback]
@@ -143,10 +150,6 @@ namespace NXDumpClient {
 		}
 
 		#if WITH_LIBPORTAL
-		private void autostart_toggle_changed() {
-			request_background.begin();
-		}
-
 		private async void request_background() {
 			/*
 			 * The following cases require us to make a request:
@@ -189,6 +192,7 @@ namespace NXDumpClient {
 					flags,
 					cancellable
 				);
+			} catch(IOError.CANCELLED e) {
 			} catch(Error e) {
 				var toast = new Adw.Toast.format(_("Permission request failed: %s"), e.message);
 				add_toast((owned)toast);
@@ -202,13 +206,43 @@ namespace NXDumpClient {
 				autostart_enabled_row.active = autostart_result;
 			}
 		}
-		#else
-		private void autostart_toggle_changed() {
-			if (autostart_enabled_row.active) {
-				critical("Autostart without libportal unimplemented!");
-				autostart_enabled_row.active = false;
+		#endif
+
+		private async void set_autostart_native() {
+			bool need_autostart = autostart_enabled_row.active;
+			if (need_autostart == autostart_enabled) {
+				return;
+			}
+
+			bool autostart_new_status = autostart_enabled;
+
+			try {
+				new_background_access_request();
+				debug("Using native implementation to set autostart status to %s", need_autostart.to_string());
+				var autostart_directory = File.new_build_filename(Environment.get_user_config_dir(), "autostart");
+				var autostart_file = autostart_directory.get_child("org.v1993.NXDumpClient.desktop");
+
+				if (need_autostart) {
+					yield create_directory_with_parents_async(autostart_directory, cancellable);
+					var contents = resources_lookup_data("/org/v1993/NXDumpClient/org.v1993.NXDumpClient.autostart.desktop", NONE);
+					yield autostart_file.replace_contents_bytes_async(contents, null, false, NONE, cancellable, null);
+				} else {
+					try {
+						yield autostart_file.delete_async(Priority.DEFAULT, cancellable);
+					} catch(IOError.NOT_FOUND e) {
+						// We're good
+					}
+				}
+
+				autostart_new_status = need_autostart;
+			} catch(IOError.CANCELLED e) {
+			} catch(Error e) {
+				var toast = new Adw.Toast.format(_("Failed to toggle autostart: %s"), e.message);
+				add_toast((owned)toast);
+			} finally {
+				autostart_enabled = autostart_new_status;
+				autostart_enabled_row.active = autostart_new_status;
 			}
 		}
-		#endif
 	}
 }

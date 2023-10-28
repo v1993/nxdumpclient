@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-28 12:03+0300\n"
+"POT-Creation-Date: 2023-10-28 13:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,12 @@ msgid "NX Dump Client"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.desktop.in.in:4
+#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:4
 msgid "Dump over USB with nxdumptool"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:3
+msgid "NX Dump Client (background launch)"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:5
@@ -395,12 +400,17 @@ msgid ""
 "options"
 msgstr ""
 
-#: src/PreferencesWindow.vala:187
+#: src/PreferencesWindow.vala:190
 msgctxt "reason for background activity"
 msgid "Dumping applications without interaction"
 msgstr ""
 
-#: src/PreferencesWindow.vala:193
+#: src/PreferencesWindow.vala:197
 #, c-format
 msgid "Permission request failed: %s"
+msgstr ""
+
+#: src/PreferencesWindow.vala:240
+#, c-format
+msgid "Failed to toggle autostart: %s"
 msgstr ""

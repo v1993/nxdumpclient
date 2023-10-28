@@ -12,6 +12,7 @@
     <file>nxdumptool_icon.jpg</file>
 
     <file alias="appdata.xml" preprocess="xml-stripblanks">org.v1993.NXDumpClient.appdata.xml</file>
+    <file>org.v1993.NXDumpClient.autostart.desktop</file>
     <file>71-nxdumptool.rules</file>
   </gresource>
 </gresources>

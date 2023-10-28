@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=NX Dump Client (background launch)
+GenericName=Dump over USB with nxdumptool
+Exec=@bindir@/nxdumpclient --background
+Icon=org.v1993.NXDumpClient
+Terminal=false
+Type=Application
+Categories=GTK;Utility;
+X-GNOME-UsesNotifications=true

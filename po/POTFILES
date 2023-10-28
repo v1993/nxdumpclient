@@ -1,4 +1,5 @@
 data/org.v1993.NXDumpClient.desktop.in.in
+data/org.v1993.NXDumpClient.autostart.desktop.in.in
 data/org.v1993.NXDumpClient.appdata.xml.in
 data/org.v1993.NXDumpClient.gschema.xml
 

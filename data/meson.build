@@ -7,6 +7,12 @@ desktop_file_in = configure_file(
   configuration: desktopconf
 )
 
+autostart_desktop_file_in = configure_file(
+          input: 'org.v1993.NXDumpClient.autostart.desktop.in.in',
+         output: 'org.v1993.NXDumpClient.autostart.desktop.in',
+  configuration: desktopconf
+)
+
 desktop_file = i18n.merge_file(
         input: desktop_file_in,
        output: 'org.v1993.NXDumpClient.desktop',
@@ -14,6 +20,14 @@ desktop_file = i18n.merge_file(
        po_dir: '../po',
       install: true,
   install_dir: get_option('datadir') / 'applications'
+)
+
+# Packed into resources
+autostart_desktop_file = i18n.merge_file(
+        input: autostart_desktop_file_in,
+       output: 'org.v1993.NXDumpClient.autostart.desktop',
+         type: 'desktop',
+       po_dir: '../po',
 )
 
 desktop_utils = find_program('desktop-file-validate', required: false)
