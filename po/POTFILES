@@ -1,16 +1,24 @@
-data/org.v1993.NXDumpClient.desktop.in
+data/org.v1993.NXDumpClient.desktop.in.in
+data/org.v1993.NXDumpClient.autostart.desktop.in.in
 data/org.v1993.NXDumpClient.appdata.xml.in
 data/org.v1993.NXDumpClient.gschema.xml
 
+# Generate with
+# find src/ -type f \( -name '*.vala' -or -name '*.blp' \)
 src/gtk/help-overlay.blp
 src/widgets/FileRow.vala
+src/widgets/DeviceStatusRow.blp
+src/widgets/DeviceStatusRow.vala
 src/widgets/FileRow.blp
-src/main.vala
-src/nxdumpclient.gresource.xml
-src/Window.vala
-src/meson.build
+src/UsbDeviceOpener.vala
 src/Window.blp
 src/Utils.vala
+src/main.vala
+src/UdevRulesDialog.blp
+src/UdevRulesDialog.vala
+src/Window.vala
+src/UsbContext.vala
+src/UsbDeviceClient.vala
 src/Application.vala
 src/PreferencesWindow.blp
 src/PreferencesWindow.vala

@@ -72,7 +72,7 @@ nxdc_blueprints_build_dir = nxdc_blueprint_tgt.full_path() + '.p'
 nxdc_sources += gnome.compile_resources('nxdumpclient-resources',
   'nxdumpclient.gresource.xml',
   c_name: 'nxdumpclient',
-  dependencies: [ nxdc_blueprint_tgt, appstream_file ],
+  dependencies: [ nxdc_blueprint_tgt, appstream_file, autostart_desktop_file ],
   source_dir: [ nxdc_blueprints_build_dir, '..' / 'data' ]
 )
 
@@ -111,8 +111,10 @@ executable('nxdumpclient', nxdc_sources,
 
   c_args: [
     '-DGETTEXT_PACKAGE="nxdumpclient"',
+    '-DG_LOG_DOMAIN="nxdumpclient"',
     '-DNXDC_VERSION="@0@"'.format(meson.project_version()),
     '-DNXDC_ICONS_PATH="@0@"'.format(get_option('prefix') / get_option('datadir') / 'icons'),
+    '-DNXDC_EXECUTABLE="@0@"'.format(get_option('prefix') / get_option('bindir') / 'nxdumpclient'),
   ],
 )
 

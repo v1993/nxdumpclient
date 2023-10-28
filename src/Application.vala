@@ -29,16 +29,30 @@ namespace NXDumpClient {
 
 	[SingleInstance]
 	public class Application: Adw.Application {
+		// Settings object and corresponding fields
 		public Settings settings { get; private set; }
 		public File destination_directory { get; protected set; }
 		public bool flatten_output { get; protected set; }
 		public bool checksum_nca { get; protected set; }
 
+		private bool hold_background_reference_ = false;
+		public bool hold_background_reference {
+			get {
+				return hold_background_reference_;
+			}
+			protected set {
+				if (value && !hold_background_reference_) {
+					hold();
+				} else if (!value && hold_background_reference_) {
+					release();
+				}
+
+				hold_background_reference_ = value;
+			}
+		}
+
 		public ListStore device_list { get; private set; }
 		public Cancellable cancellable { get; private set; default = new Cancellable(); }
-
-		private UsbContext usb_ctx;
-		private Window? main_window = null;
 
 		#if WITH_LIBPORTAL
 		public Xdp.Portal? portal { get; private set; default = null; }
@@ -50,6 +64,10 @@ namespace NXDumpClient {
 			prompted_for_udev_rules = true;
 		}
 		#endif
+
+		private bool background_bound = false;
+		private UsbContext usb_ctx;
+		private Window? main_window = null;
 
 		private bool should_show_desktop_notification() {
 			return !cancellable.is_cancelled() && (main_window == null || !main_window.is_active);
@@ -181,11 +199,12 @@ namespace NXDumpClient {
 
 		construct {
 			application_id = "org.v1993.NXDumpClient";
-			flags = DEFAULT_FLAGS;
+			flags = HANDLES_COMMAND_LINE;
 
 			OptionEntry[] options = {
-				{ "version", 'v', NONE, NONE, null, _("Print application version and exit") },
+				{ "background", '\0', NONE, NONE, null, _("Launch without a visible window if allowed to in settings, exit otherwise") },
 				{ "print-udev-rules", '\0', NONE, NONE, null, _("Print udev rules required for USB access and exit") },
+				{ "version", 'v', NONE, NONE, null, _("Print application version and exit") },
 				{null}
 			};
 
@@ -234,24 +253,28 @@ namespace NXDumpClient {
 			settings = new GLib.Settings(application_id);
 			settings.bind_with_mapping("dump-path",
 				this, "destination-directory",
-				DEFAULT,
+				NO_SENSITIVITY,
 				FileSettingUtils.get, FileSettingUtils.set, (void*)get_default_dump_path, null
 			);
 
 			settings.bind("flatten-output",
 				this, "flatten-output",
-				DEFAULT
+				NO_SENSITIVITY
 			);
 
 			settings.bind("checksum-nca",
 				this, "checksum-nca",
-				DEFAULT
+				NO_SENSITIVITY
 			);
+
+			// allow-background is bound in bind_background.
+			// This is done to avoid making one-shot invocations (mainly actions)
+			// from sticking around.
 
 			#if PROMPT_FOR_UDEV_RULES
 			settings.bind("prompted-for-udev-rules",
 				this, "prompted-for-udev-rules",
-				DEFAULT
+				NO_SENSITIVITY
 			);
 			#endif
 
@@ -278,21 +301,65 @@ namespace NXDumpClient {
 			main_window = null;
 		}
 
+		// Call only if you're fine with current instance running in background if allowed so by settings
+		private void bind_background() {
+			if (background_bound) {
+				return;
+			}
+
+			settings.bind("allow-background",
+				this, "hold-background-reference",
+				NO_SENSITIVITY
+			);
+
+			background_bound = true;
+		}
+
+		private void initialize_usb() {
+			if (usb_ctx != null) {
+				return;
+			}
+
+			try {
+				usb_ctx = new UsbContext();
+
+				// Allow window to show up first
+				Idle.add_once(() => {
+					usb_ctx.enumerate();
+				});
+			} catch(Error e) {
+				printerr(_("Failed to initialize USB context: %s\n"), e.message);
+				Process.exit(1);
+			}
+		}
+
+		public override int command_line(ApplicationCommandLine command_line) {
+			debug("command_line() invoked, is_remote: %s", command_line.is_remote.to_string());
+			if (command_line.get_options_dict().contains("background")) {
+				if (command_line.is_remote) {
+					command_line.print("Ignoring background launch - primary instance already running\n");
+					return 0;
+				}
+
+				// This will acquire a reference if enabled in settings
+				bind_background();
+				if (!hold_background_reference) {
+					// Background mode disabled in settings - just exit
+					return 0;
+				}
+
+				initialize_usb();
+				return 0;
+			} else {
+				activate();
+				return 0;
+			}
+		}
+
 		public override void activate() {
 			base.activate();
-			if (usb_ctx == null) {
-				try {
-					usb_ctx = new UsbContext();
-
-					// Allow window to show up first
-					Idle.add_once(() => {
-						usb_ctx.enumerate();
-					});
-				} catch(Error e) {
-					printerr(_("Failed to initialize USB context: %s\n"), e.message);
-					Process.exit(1);
-				}
-			}
+			bind_background();
+			initialize_usb();
 
 			if (main_window == null) {
 				main_window = new Window(this);
@@ -320,7 +387,7 @@ namespace NXDumpClient {
 
 		private void on_about_action() {
 			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
-				transient_for = this.active_window,
+				transient_for = main_window,
 				translator_credits = _("translator-credits"),
 				developers = {
 					"v19930312"
@@ -341,7 +408,7 @@ namespace NXDumpClient {
 
 		private void on_preferences_action() {
 			var preferences = new PreferencesWindow() {
-				transient_for = this.active_window
+				transient_for = main_window
 			};
 
 			preferences.present();

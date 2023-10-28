@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-26 19:26+0300\n"
+"POT-Creation-Date: 2023-10-28 13:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/org.v1993.NXDumpClient.desktop.in:3
+#: data/org.v1993.NXDumpClient.desktop.in.in:3
 #: data/org.v1993.NXDumpClient.appdata.xml.in:3 src/Window.blp:7
 msgid "NX Dump Client"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.desktop.in:4
+#: data/org.v1993.NXDumpClient.desktop.in.in:4
+#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:4
 msgid "Dump over USB with nxdumptool"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:3
+msgid "NX Dump Client (background launch)"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:5
@@ -34,7 +39,7 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:193
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:212
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
@@ -81,6 +86,26 @@ msgstr ""
 msgid "This is only used in cases where udev rules must me manually installed."
 msgstr ""
 
+#: data/org.v1993.NXDumpClient.gschema.xml:38
+msgid "If application should continue running in background without a window"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:39
+msgid ""
+"Desktop notifications are used to communicate status in this case. Pass `--"
+"background` when this option is enabled to launch without a window."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:46
+msgid "Status of application's autostart capability"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:47
+msgid ""
+"If application is expected to be launched at boot. Modifying this option "
+"manually will do nothing but confuse the application."
+msgstr ""
+
 #: src/gtk/help-overlay.blp:11
 msgctxt "shortcut window"
 msgid "General"
@@ -113,6 +138,71 @@ msgstr ""
 msgid "Select file"
 msgstr ""
 
+#: src/widgets/DeviceStatusRow.blp:30
+msgid "Status"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.blp:45
+msgid "Connection"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.blp:62
+msgctxt "nxdumptool version"
+msgid "Version"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.blp:80
+msgid "Transfer progress"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:86
+msgctxt "status"
+msgid "Uninitialized"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:89
+msgctxt "status"
+msgid "Connected"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:92
+msgctxt "status"
+msgid "Transferring file"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:95
+msgctxt "status"
+msgid "Fatal error"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:121
+#, c-format
+msgctxt "file transfer progress"
+msgid "%s / %s"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:162
+msgid "USB 1.1"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:165
+msgid "USB 2.0"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:168
+msgid "USB 3.0"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:171
+msgctxt "speed string"
+msgid "N/A"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:179
+msgctxt "version string"
+msgid "N/A"
+msgstr ""
+
 #: src/widgets/FileRow.blp:13
 msgctxt "FileRow button"
 msgid "Reset to default"
@@ -142,67 +232,108 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
-#: src/Application.vala:85
+#: src/UdevRulesDialog.blp:5
+msgid "Udev rules installation"
+msgstr ""
+
+#: src/UdevRulesDialog.blp:24
+msgid ""
+"Udev rules must be installed for this program to work.\n"
+"Please exectute the following command to do so:"
+msgstr ""
+
+#: src/UdevRulesDialog.blp:36
+msgid "I have installed the rules; do not show me this dialog again"
+msgstr ""
+
+#: src/UdevRulesDialog.blp:43
+msgid "Confirm"
+msgstr ""
+
+#. Not really a problem - device was disconnected during setup
+#: src/UsbContext.vala:56
+msgid "Error handling a new device"
+msgstr ""
+
+#: src/UsbDeviceClient.vala:156
+#, c-format
+msgid "Not enough space for dump (%s required)"
+msgstr ""
+
+#: src/UsbDeviceClient.vala:552
+msgid "NCA checksum verification failed (non-standard dump options?)"
+msgstr ""
+
+#: src/UsbDeviceClient.vala:580
+msgid "NSP header"
+msgstr ""
+
+#: src/Application.vala:105
 msgid "nxdumptool device connected"
 msgstr ""
 
-#: src/Application.vala:93
+#: src/Application.vala:113
 msgid "nxdumptool device disconnected"
 msgstr ""
 
-#: src/Application.vala:110
+#: src/Application.vala:130
 msgid "File transfer started"
 msgstr ""
 
-#: src/Application.vala:135
+#: src/Application.vala:155
 msgid "File transfer complete"
 msgstr ""
 
-#: src/Application.vala:138 src/Application.vala:144
+#: src/Application.vala:158 src/Application.vala:164
 msgid "Show in folder"
 msgstr ""
 
-#: src/Application.vala:143
+#: src/Application.vala:163
 #, c-format
 msgid "Transfer of file “%s” complete"
 msgstr ""
 
-#: src/Application.vala:165
+#: src/Application.vala:185
 msgid "File transfer canceled"
 msgstr ""
 
-#: src/Application.vala:165
+#: src/Application.vala:185
 msgid "File transfer failed"
 msgstr ""
 
-#: src/Application.vala:172
+#: src/Application.vala:192
 #, c-format
 msgid "Transfer of file “%s” canceled"
 msgstr ""
 
-#: src/Application.vala:172
+#: src/Application.vala:192
 #, c-format
 msgid "Transfer of file “%s” failed"
 msgstr ""
 
-#: src/Application.vala:187
-msgid "Print application version and exit"
+#: src/Application.vala:205
+msgid ""
+"Launch without a visible window if allowed to in settings, exit otherwise"
 msgstr ""
 
-#: src/Application.vala:188
+#: src/Application.vala:206
 msgid "Print udev rules required for USB access and exit"
 msgstr ""
 
-#: src/Application.vala:289
+#: src/Application.vala:207
+msgid "Print application version and exit"
+msgstr ""
+
+#: src/Application.vala:331
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:313
+#: src/Application.vala:391
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:320
+#: src/Application.vala:398
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""
@@ -212,35 +343,74 @@ msgid "General settings"
 msgstr ""
 
 #: src/PreferencesWindow.blp:9
-msgid "Dump output options"
+msgctxt "settings group"
+msgid "Application"
 msgstr ""
 
 #: src/PreferencesWindow.blp:12
 msgctxt "setting"
-msgid "Destination directory"
+msgid "Run in background"
+msgstr ""
+
+#: src/PreferencesWindow.blp:13
+msgid "Do not exit when main window is closed (use menu to quit)"
+msgstr ""
+
+#: src/PreferencesWindow.blp:17
+msgctxt "setting"
+msgid "Launch at boot"
 msgstr ""
 
 #: src/PreferencesWindow.blp:18
+msgid "Automatically start in background on login"
+msgstr ""
+
+#: src/PreferencesWindow.blp:24
+msgctxt "settings group"
+msgid "Dump output"
+msgstr ""
+
+#: src/PreferencesWindow.blp:27
+msgctxt "setting"
+msgid "Destination directory"
+msgstr ""
+
+#: src/PreferencesWindow.blp:33
 msgctxt "dialog title"
 msgid "Dump destination directory"
 msgstr ""
 
-#: src/PreferencesWindow.blp:23
+#: src/PreferencesWindow.blp:38
 msgctxt "setting"
 msgid "Flatten dump directory"
 msgstr ""
 
-#: src/PreferencesWindow.blp:24
+#: src/PreferencesWindow.blp:39
 msgid "Avoid creating subfolders unless necessary"
 msgstr ""
 
-#: src/PreferencesWindow.blp:28
+#: src/PreferencesWindow.blp:43
 msgctxt "setting"
 msgid "Verify NCA checksums"
 msgstr ""
 
-#: src/PreferencesWindow.blp:29
+#: src/PreferencesWindow.blp:44
 msgid ""
 "Extra integrity verification but will error out with non-standard dump "
 "options"
+msgstr ""
+
+#: src/PreferencesWindow.vala:190
+msgctxt "reason for background activity"
+msgid "Dumping applications without interaction"
+msgstr ""
+
+#: src/PreferencesWindow.vala:197
+#, c-format
+msgid "Permission request failed: %s"
+msgstr ""
+
+#: src/PreferencesWindow.vala:240
+#, c-format
+msgid "Failed to toggle autostart: %s"
 msgstr ""

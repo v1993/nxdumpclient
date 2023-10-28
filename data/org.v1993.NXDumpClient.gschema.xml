@@ -33,5 +33,21 @@
         This is only used in cases where udev rules must me manually installed.
       </description>
     </key>
+    <key name="allow-background" type="b">
+      <default>false</default>
+      <summary>If application should continue running in background without a window</summary>
+      <description>
+        Desktop notifications are used to communicate status in this case. Pass `--background` when this option is enabled
+        to launch without a window.
+      </description>
+    </key>
+    <key name="autostart-enabled" type="b">
+      <default>false</default>
+      <summary>Status of application's autostart capability</summary>
+      <description>
+        If application is expected to be launched at boot.
+        Modifying this option manually will do nothing but confuse the application.
+      </description>
+    </key>
 	</schema>
 </schemalist>
