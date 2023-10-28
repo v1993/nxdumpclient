@@ -41,5 +41,13 @@
         to launch without a window.
       </description>
     </key>
+    <key name="autostart-enabled" type="b">
+      <default>false</default>
+      <summary>Status of application's autostart capability</summary>
+      <description>
+        If application is expected to be launched at boot.
+        Modifying this option manually will do nothing but confuse the application.
+      </description>
+    </key>
 	</schema>
 </schemalist>

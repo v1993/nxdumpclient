@@ -1,5 +1,14 @@
+desktopconf = configuration_data()
+desktopconf.set('bindir', get_option('prefix') / get_option('bindir'))
+
+desktop_file_in = configure_file(
+          input: 'org.v1993.NXDumpClient.desktop.in.in',
+         output: 'org.v1993.NXDumpClient.desktop.in',
+  configuration: desktopconf
+)
+
 desktop_file = i18n.merge_file(
-        input: 'org.v1993.NXDumpClient.desktop.in',
+        input: desktop_file_in,
        output: 'org.v1993.NXDumpClient.desktop',
          type: 'desktop',
        po_dir: '../po',

@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+extern const string NXDC_EXECUTABLE;
 
 // Debug option to use libportal even out of sandbox.
 // This is theoretically safe to have always, but may hit bugs in portal backends.
@@ -34,20 +35,36 @@ namespace NXDumpClient {
 		private unowned Adw.SwitchRow checksum_nca;
 		[GtkChild]
 		private unowned Adw.SwitchRow allow_background_row;
+		[GtkChild]
+		private unowned Adw.SwitchRow autostart_enabled_row;
 
 		private Cancellable? cancellable = null;
 
-		#if WITH_LIBPORTAL
-		// Note: unused if not running under sandbox
-		protected bool allow_background { get; set; }
-		#endif
+		public bool allow_background { get; protected set; }
+		public bool autostart_enabled { get; protected set; }
 
 		static construct {
 			typeof(NXDumpClient.FileRow).ensure();
 		}
 
-		void on_unrealized() {
+		private void on_unrealized() {
 			cancellable.cancel();
+		}
+
+		private void background_changed() {
+			if (!allow_background) {
+				// Ensure this since settings binding seem to miss it in some cases
+				autostart_enabled_row.active = false;
+				autostart_enabled = false;
+			}
+		}
+
+		// Cancel previous requests; get a new cancellable for us
+		private void new_background_access_request() {
+			((!)cancellable).cancel();
+			cancellable = new Cancellable();
+			// Old cancellable is disconnected automatically
+			new Application().cancellable.connect(cancellable.cancel);
 		}
 
 		construct {
@@ -55,7 +72,9 @@ namespace NXDumpClient {
 			cancellable = new Cancellable();
 			app.cancellable.connect(cancellable.cancel);
 			// Cancel all pending operations once this window is closed to avoid references sticking around
-			((Gtk.Widget)this).unrealize.connect(on_unrealized);
+			((Gtk.Widget)this).unrealize.connect(this.on_unrealized);
+
+			notify["allow-background"].connect(this.background_changed);
 
 			app.settings.bind_with_mapping(
 				"dump-path",
@@ -76,21 +95,21 @@ namespace NXDumpClient {
 				DEFAULT
 			);
 
+			app.settings.bind(
+				"allow-background",
+				this, "allow-background",
+				DEFAULT
+			);
+
 			#if WITH_LIBPORTAL
 			if (FORCE_LIBPORTAL || Xdp.Portal.running_under_sandbox()) {
-				app.settings.bind(
-					"allow-background",
-					this, "allow-background",
-					DEFAULT
-				);
-
 				app.settings.bind(
 					"allow-background",
 					allow_background_row, "active",
 					GET
 				);
 
-				allow_background_row.notify["active"].connect(this.background_changed);
+				allow_background_row.notify["active"].connect(this.request_background);
 			} else
 			#endif
 			{
@@ -101,6 +120,21 @@ namespace NXDumpClient {
 					DEFAULT
 				);
 			}
+
+			app.settings.bind(
+				"autostart-enabled",
+				this, "autostart-enabled",
+				DEFAULT
+			);
+
+			// Special handling is always required for autostart
+			app.settings.bind(
+				"autostart-enabled",
+				autostart_enabled_row, "active",
+				GET | NO_SENSITIVITY
+			);
+			// TODO: account for setting writablitiy
+			autostart_enabled_row.notify["active"].connect(this.autostart_toggle_changed);
 		}
 
 		[GtkCallback]
@@ -109,35 +143,70 @@ namespace NXDumpClient {
 		}
 
 		#if WITH_LIBPORTAL
-		private async void background_changed() {
-			var request_result = false;
+		private void autostart_toggle_changed() {
+			request_background.begin();
+		}
+
+		private async void request_background() {
+			/*
+			 * The following cases require us to make a request:
+			 * !allow_background -> allow_background -- always (enable background)
+			 * !autostart_enabled -> autostart_enabled -- always (enable autostart)
+			 * autostart_enabled -> !autostart_enabled -- always (disable autostart)
+			 */
+			bool should_request = false;
+			bool need_autostart = autostart_enabled_row.active;
+			should_request |= allow_background_row.active && !allow_background;
+			should_request |= autostart_enabled_row.active != autostart_enabled;
+
+			if (!should_request) {
+				debug("Not querying for new background settings");
+				allow_background = allow_background_row.active;
+				autostart_enabled = autostart_enabled_row.active;
+				return;
+			}
+
+			bool authorized = false;
+
 			try {
-				if (allow_background_row.active && !allow_background) {
-					// TODO: split into a separate method when implementing autostart support
-					var? portal = new Application().portal;
-					if (portal == null) {
-						// It's hopeless
-						return;
-					}
-					var parent = Xdp.parent_new_gtk(this);
-					//var cmd = new GenericArray<unowned string>();
-					request_result = yield portal.request_background(
-						parent,
-						C_("reason string for background activity", "Dumping applications in background"),
-						null, // Binding issue, not our bug (fix PRed)
-						NONE,
-						cancellable
-					);
+				new_background_access_request();
+				var? portal = new Application().portal;
+				if (portal == null) {
+					// It's hopeless
+					return;
 				}
-			} catch (IOError.CANCELLED e) {
-			} catch (Error e) {
-				warning("Error when requesting background permissions: %s", e.message);
+
+				var autostart_cmd = new GenericArray<unowned string>(2);
+				autostart_cmd.add(NXDC_EXECUTABLE);
+				autostart_cmd.add("--background");
+				// D-Bus activation is not an option because of having to pass a flag
+				var flags = need_autostart ? Xdp.BackgroundFlags.AUTOSTART : Xdp.BackgroundFlags.NONE;
+				debug("Requesting background, autostart: %s", need_autostart.to_string());
+				authorized = yield portal.request_background(
+					Xdp.parent_new_gtk(this),
+					C_("reason for background activity", "Dumping applications without interaction"),
+					autostart_cmd,
+					flags,
+					cancellable
+				);
+			} catch(Error e) {
+				var toast = new Adw.Toast.format(_("Permission request failed: %s"), e.message);
+				add_toast((owned)toast);
 			} finally {
-				allow_background = request_result;
-				// Check to avoid accidental recursion
-				if (allow_background_row.active != request_result) {
-					allow_background_row.active = request_result;
-				}
+				debug("Background request result: %s", authorized.to_string());
+				var background_result = allow_background_row.active && authorized;
+				var autostart_result = need_autostart && authorized;
+				allow_background = background_result;
+				autostart_enabled = autostart_result;
+				allow_background_row.active = background_result;
+				autostart_enabled_row.active = autostart_result;
+			}
+		}
+		#else
+		private void autostart_toggle_changed() {
+			if (autostart_enabled_row.active) {
+				critical("Autostart without libportal unimplemented!");
+				autostart_enabled_row.active = false;
 			}
 		}
 		#endif

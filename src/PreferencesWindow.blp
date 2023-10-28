@@ -12,6 +12,12 @@ template $NXDumpClientPreferencesWindow: Adw.PreferencesWindow {
 				title: C_("setting", "Run in background");
 				subtitle: _("Do not exit when main window is closed (use menu to quit)");
 			}
+
+			Adw.SwitchRow autostart_enabled_row {
+				title: C_("setting", "Launch at boot");
+				subtitle: _("Automatically start in background on login");
+				sensitive: bind template.allow_background;
+			}
 		}
 
 		Adw.PreferencesGroup {
