@@ -1,4 +1,4 @@
-name: Release
+name: Release flatpaks
 
 on:
   workflow_run:
@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    #if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/')
 
     permissions:
       contents: write
@@ -28,11 +28,9 @@ jobs:
           mkdir upload
           find artifacts -mindepth 1 -type d -exec sh -c 'cp "$0"/nxdumpclient.flatpak upload/$(basename "$0").flatpak' {} \;
           echo "Files to upload:"
-          find upload
+          find upload -type f -printf '%f\n'
 
       - name: Upload artifacts to GitHub release
-        # TODO: remove, uncomment the job-wide one
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           files: upload/*
