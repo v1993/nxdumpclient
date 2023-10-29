@@ -37,8 +37,8 @@ nxdc_deps = [
   dependency('gusb'),
 ]
 
-libportal = dependency('libportal', required: get_option('use_libportal'))
-libportal_gtk4 = dependency('libportal-gtk4', required: get_option('use_libportal'))
+libportal = dependency('libportal', required: get_option('libportal'))
+libportal_gtk4 = dependency('libportal-gtk4', required: get_option('libportal'))
 
 if (libportal.found() and libportal_gtk4.found())
   nxdc_deps += [libportal, libportal_gtk4]

@@ -2,9 +2,11 @@
 
 ## A client for dumping over USB with [nxdumptool](https://github.com/DarkMatterCore/nxdumptool)
 
+![GitHub Actions - Build Status](https://img.shields.io/github/actions/workflow/status/v1993/nxdumpclient/flatpak.yml)
+
 ![screenshot](data/screenshot-1.png)
 
-Not much to say, really - it just works!
+Not much to say, really - it just works! You can enable autostart in settings and leave it running in background if you so desire.
 
 ### Official nxdumptool discord server where I and other helpful people can be found: https://discord.gg/SCbbcQx
 
@@ -13,16 +15,26 @@ Not much to say, really - it just works!
 ```bash
 git clone https://github.com/v1993/nxdumpclient.git
 cd nxdumpclient
-meson setup --buildtype=release -Db_lto=true -Denforce_build_order=true --prefix=/usr build
+meson setup --buildtype=debugoptimized -Db_lto=true -Denforce_build_order=true --prefix=/usr build
 meson compile -C build
 meson install -C build
 ```
 
-Please note that a fairly fresh distro is required.
+Please note that a fairly recent distro is required - see dependencies section below.
 
-An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml` (please note that building with flatpak requires initializing submodules; they are not used otherwise).
+An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml` (please note that building with flatpak requires initializing git submodules; they are not used otherwise). Use of `flatpak-builder` is out-of-scope for this document - flatpaks are available as CI artifacts and attached to releases and I intend on publishing on Flathub to make installation even easier.
 
-I'll look into publishing on flathub (and likely AUR) once I get version 1.0 out, which should trivialize installation.
+### Updating
+
+```bash
+cd nxdumpclient
+git pull
+meson subprojects update
+meson compile -C build
+meson install -C build
+```
+
+Note for those using `flatpak-builder`: you'll want to update git submodules as well, but can skip updating meson subprojects.
 
 ### Dependencies
 
@@ -30,9 +42,8 @@ I'll look into publishing on flathub (and likely AUR) once I get version 1.0 out
 * libadwaita >= 1.4
 * GLib >= 2.76
 * GUsb (reasonably new)
-* libportal (optional)
-
-Or, once again, use `flatpak-builder`, which will take care of installing everything required as part of the build.
+* libportal (optional for non-sandbox builds)
+* blueprint-compiler >= 0.10 (build-only; automatically fetched by meson if not available)
 
 ## Frequently asked questions
 
@@ -46,6 +57,8 @@ Additional verification is implemented compared to official `nxdt_host.py` progr
 
 You can either dump with default settings (which you probably should be doing anyways) or disable additional verification in preferences.
 
+A slightly different method that accounts for non-standard dump settings exists; I intend to add it later on.
+
 ### I get permissions error. Why?
 
-Installing a udev rule is required for user access to device. You should have been prompted to do so interactively on first launch if using flatpak and system-wide installation does this automatically. Please report an issue if you think udev rules should have been installed by now and make sure to mention installation method in your report.
+Installing special udev rules is required for user access to device. You should have been prompted to do so interactively on first launch if using flatpak; system-wide installation installs rules automatically. Please report an issue if you think udev rules should have been installed by now - make sure to mention installation method in your report.

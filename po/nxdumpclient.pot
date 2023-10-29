@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-29 12:06+0300\n"
+"POT-Creation-Date: 2023-10-29 15:57+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,12 +39,32 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:247
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:235
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:19
-msgid "NX Dump Tool receiving a file."
+msgid "NX Dump Tool receiving a file"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:26
+msgid "First stable release."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:27
+msgid "Release highlights:"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:29
+msgid "Support for running in background and autostart"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:30
+msgid "Confirm exit if file transfer is in progress"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:36
+msgid "Initial release."
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.gschema.xml:6
@@ -300,64 +320,64 @@ msgstr ""
 msgid "nxdumptool device disconnected"
 msgstr ""
 
-#: src/Application.vala:165
+#: src/Application.vala:161
 msgid "File transfer started"
 msgstr ""
 
-#: src/Application.vala:190
+#: src/Application.vala:182
 msgid "File transfer complete"
 msgstr ""
 
-#: src/Application.vala:193 src/Application.vala:199
+#: src/Application.vala:185 src/Application.vala:191
 msgid "Show in folder"
 msgstr ""
 
-#: src/Application.vala:198
+#: src/Application.vala:190
 #, c-format
 msgid "Transfer of file “%s” complete"
 msgstr ""
 
-#: src/Application.vala:220
+#: src/Application.vala:208
 msgid "File transfer canceled"
 msgstr ""
 
-#: src/Application.vala:220
+#: src/Application.vala:208
 msgid "File transfer failed"
 msgstr ""
 
-#: src/Application.vala:227
+#: src/Application.vala:215
 #, c-format
 msgid "Transfer of file “%s” canceled"
 msgstr ""
 
-#: src/Application.vala:227
+#: src/Application.vala:215
 #, c-format
 msgid "Transfer of file “%s” failed"
 msgstr ""
 
-#: src/Application.vala:240
+#: src/Application.vala:228
 msgid ""
 "Launch without a visible window if allowed to in settings, exit otherwise"
 msgstr ""
 
-#: src/Application.vala:241
+#: src/Application.vala:229
 msgid "Print udev rules required for USB access and exit"
 msgstr ""
 
-#: src/Application.vala:242
+#: src/Application.vala:230
 msgid "Print application version and exit"
 msgstr ""
 
-#: src/Application.vala:366
+#: src/Application.vala:354
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:426
+#: src/Application.vala:414
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:433
+#: src/Application.vala:421
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""

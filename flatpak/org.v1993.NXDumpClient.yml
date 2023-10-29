@@ -25,7 +25,7 @@ modules:
     builddir: true
     config-opts:
       - -Dudev_rules=prompt
-      - -Duse_libportal=enabled
+      - -Dlibportal=enabled
       - -Denforce_build_order=true
     sources:
       - type: dir

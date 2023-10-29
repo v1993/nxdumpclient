@@ -16,12 +16,26 @@
 	</description>
   <screenshots>
     <screenshot type="default">
-      <caption>NX Dump Tool receiving a file.</caption>
+      <caption>NX Dump Tool receiving a file</caption>
       <image type="source">https://raw.githubusercontent.com/v1993/nxdumpclient/main/data/screenshot-1.png</image>
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.1.0" date="2023-10-26" />
+    <release version="1.0.0" date="2023-10-29" type="stable">
+      <description>
+        <p>First stable release.</p>
+        <p>Release highlights:</p>
+        <ul>
+          <li>Support for running in background and autostart</li>
+          <li>Confirm exit if file transfer is in progress</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.1.0" date="2023-10-26" type="development">
+      <description>
+        <p>Initial release.</p>
+      </description>
+    </release>
   </releases>
   <requires>
     <internet>offline-only</internet>
@@ -29,4 +43,7 @@
   <supports>
     <modalias>usb:v057Ep3000d0100dc00dsc00dp00icFFiscFFipFFin00</modalias>
   </supports>
+  <categories>
+    <category>Utility</category>
+  </categories>
 </component>
