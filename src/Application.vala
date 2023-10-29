@@ -164,6 +164,7 @@ namespace NXDumpClient {
 					notif.set_category("device");
 					send_notification(@"nxdc-file-$(file.get_uri())", notif);
 				}
+			} catch(IOError.CANCELLED e) {
 			} catch(Error e) {
 				warning("Error sending notification: %s", e.message);
 			}
@@ -194,6 +195,7 @@ namespace NXDumpClient {
 					};
 					main_window.show_toast((owned)toast);
 				}
+			} catch(IOError.CANCELLED e) {
 			} catch(Error e) {
 				warning("Error sending notification: %s", e.message);
 			}
@@ -464,6 +466,7 @@ namespace NXDumpClient {
 			try {
 				var launcher = new Gtk.FileLauncher(file);
 				yield launcher.open_containing_folder(main_window, cancellable);
+			} catch(IOError.CANCELLED e) {
 			} catch(Error e) {
 				warning("Failed to show file in directory: %s", e.message);
 			} finally {
