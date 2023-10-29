@@ -87,12 +87,13 @@ template $NXDumpClientDeviceStatusRow: Adw.Bin {
 			}
 
 			Label {
-				styles ["title-4"]
+				styles ["heading"]
 				ellipsize: start;
 				label: bind template.file_name;
 			}
 
 			Label {
+				styles ["body"]
 				ellipsize: end;
 				label: bind template.file_name_inner;
 			}
