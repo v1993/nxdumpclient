@@ -27,6 +27,28 @@ namespace NXDumpClient {
 		new Application().show_error(desc, message);
 	}
 
+	internal class FileTransferInhibitor: Object {
+		public static uint current_count { get; private set; }
+
+		private uint cookie = 0;
+
+		construct {
+			cookie = new Application().inhibit(null, LOGOUT | SUSPEND, _("File transfer is in progres"));
+			++current_count;
+			debug("Inhibited, cookie: %u, active inhibitors: %u", cookie, current_count);
+		}
+
+		~FileTransferInhibitor() {
+			var app = new Application();
+			// May be false during app shutdown
+			if (app.is_registered) {
+				app.uninhibit(cookie);
+			}
+			--current_count;
+			debug("Uninhibited, cookie: %u, active inhibitors: %u", cookie, current_count);
+		}
+	}
+
 	[SingleInstance]
 	public class Application: Adw.Application {
 		// Settings object and corresponding fields
@@ -75,6 +97,19 @@ namespace NXDumpClient {
 
 		private bool should_show_toast() {
 			return !cancellable.is_cancelled() && main_window != null;
+		}
+
+		public async bool query_app_exit() {
+			var dialog = new Adw.MessageDialog(main_window, _("Confirm exit"), _("A file transfer is currently in progress.\nAre you sure you want to quit?")) {
+				close_response = "cancel",
+				default_response = "confirm",
+
+			};
+			dialog.add_response("cancel", C_("deny app exit", "Cancel"));
+			dialog.add_response("confirm", C_("confirm app exit", "Confirm exit"));
+			dialog.set_response_appearance("confirm", DESTRUCTIVE);
+			var res = yield dialog.choose(cancellable);
+			return res == "confirm";
 		}
 
 		public void show_error(string desc, string message) {
@@ -215,7 +250,7 @@ namespace NXDumpClient {
 				// In-app only
 				{ "about", this.on_about_action },
 				{ "preferences", this.on_preferences_action },
-				{ "quit", this.quit },
+				{ "quit", this.on_quit_with_confirmation_action },
 
 				// May be invoked externally (e.g. from a notification)
 				{ "show-file", this.on_show_file_action, "s" }
@@ -418,6 +453,22 @@ namespace NXDumpClient {
 		requires(param != null && param.is_of_type(VariantType.STRING))
 		{
 			show_file.begin(File.new_for_uri(param.get_string()));
+		}
+
+		private void on_quit_with_confirmation_action() {
+			// Do not test if background is enabled - app exit bypasses that
+			if (FileTransferInhibitor.current_count == 0) {
+				quit();
+			} else {
+				quit_with_confirmation.begin();
+			}
+		}
+
+		private async void quit_with_confirmation() {
+			var res = yield query_app_exit();
+			if (res) {
+				quit();
+			}
 		}
 
 		private async void show_file(File file) {

@@ -5,6 +5,7 @@ template $NXDumpClientWindow: Adw.ApplicationWindow {
 	default-width: 600;
 	default-height: 500;
 	title: _("NX Dump Client");
+	close-request => $on_close_request();
 
 	Box {
 		orientation: vertical;

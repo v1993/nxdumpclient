@@ -26,7 +26,9 @@ namespace NXDumpClient {
 		[GtkChild]
 		private unowned Gtk.Stack content_selector;
 
-		protected Gtk.SelectionModel devices_model { get; set; }
+		public Gtk.SelectionModel devices_model { get; construct; }
+
+		private bool close_confirmed = false;
 
 		public Window(Gtk.Application app) {
 			Object(
@@ -56,24 +58,53 @@ namespace NXDumpClient {
 		}
 
 		[GtkCallback]
-		void setup_element(Gtk.SignalListItemFactory factory, Object o) {
+		private bool on_close_request() {
+			// Return true to NOT close, false to CLOSE
+			if (close_confirmed) {
+				return false; // Close, queried the user and was allowed to
+			}
+
+			if (FileTransferInhibitor.current_count == 0) {
+				return false; // Close, nothing is running in background
+			}
+
+			var app = new Application();
+			if (app.hold_background_reference) {
+				return false; // Close, application will keep running
+			}
+
+			query_for_close.begin();
+			return true; // Do not close; present a query
+		}
+
+		private async void query_for_close() {
+			var result = yield new Application().query_app_exit();
+			if (result) {
+				close_confirmed = true;
+				close();
+				close_confirmed = false;
+			}
+		}
+
+		[GtkCallback]
+		private void setup_element(Gtk.SignalListItemFactory factory, Object o) {
 			var litem = (Gtk.ListItem)o;
 			litem.child = new DeviceStatusRow();
 		}
 
 		[GtkCallback]
-		void teardown_element(Gtk.SignalListItemFactory factory, Object o) {
+		private void teardown_element(Gtk.SignalListItemFactory factory, Object o) {
 		}
 
 		[GtkCallback]
-		void bind_element(Gtk.SignalListItemFactory factory, Object o) {
+		private void bind_element(Gtk.SignalListItemFactory factory, Object o) {
 			var litem = (Gtk.ListItem)o;
 			var child = (DeviceStatusRow)litem.child;
 			child.bind((UsbDeviceClient)litem.item);
 		}
 
 		[GtkCallback]
-		void unbind_element(Gtk.SignalListItemFactory factory, Object o) {
+		private void unbind_element(Gtk.SignalListItemFactory factory, Object o) {
 			var litem = (Gtk.ListItem)o;
 			var child = (DeviceStatusRow)litem.child;
 			child.unbind();

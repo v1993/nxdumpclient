@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-28 13:37+0300\n"
+"POT-Creation-Date: 2023-10-29 12:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:212
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:247
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
@@ -203,32 +203,32 @@ msgctxt "version string"
 msgid "N/A"
 msgstr ""
 
-#: src/widgets/FileRow.blp:13
+#: src/widgets/FileRow.blp:15
 msgctxt "FileRow button"
 msgid "Reset to default"
 msgstr ""
 
-#: src/Window.blp:26
+#: src/Window.blp:27
 msgid "No Devices Connected"
 msgstr ""
 
-#: src/Window.blp:27
+#: src/Window.blp:28
 msgid "Connect your Switch and start nxdumptool to proceed"
 msgstr ""
 
-#: src/Window.blp:52
+#: src/Window.blp:53
 msgid "_Preferences"
 msgstr ""
 
-#: src/Window.blp:53
+#: src/Window.blp:54
 msgid "_Keyboard Shortcuts"
 msgstr ""
 
-#: src/Window.blp:54
+#: src/Window.blp:55
 msgid "_About NX Dump Client"
 msgstr ""
 
-#: src/Window.blp:57
+#: src/Window.blp:58
 msgid "_Quit"
 msgstr ""
 
@@ -255,85 +255,109 @@ msgstr ""
 msgid "Error handling a new device"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:156
+#: src/UsbDeviceClient.vala:157
 #, c-format
 msgid "Not enough space for dump (%s required)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:552
+#: src/UsbDeviceClient.vala:557
 msgid "NCA checksum verification failed (non-standard dump options?)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:580
+#: src/UsbDeviceClient.vala:585
 msgid "NSP header"
 msgstr ""
 
-#: src/Application.vala:105
+#: src/Application.vala:36
+msgid "File transfer is in progres"
+msgstr ""
+
+#: src/Application.vala:103
+msgid "Confirm exit"
+msgstr ""
+
+#: src/Application.vala:103
+msgid ""
+"A file transfer is currently in progress.\n"
+"Are you sure you want to quit?"
+msgstr ""
+
+#: src/Application.vala:108
+msgctxt "deny app exit"
+msgid "Cancel"
+msgstr ""
+
+#: src/Application.vala:109
+msgctxt "confirm app exit"
+msgid "Confirm exit"
+msgstr ""
+
+#: src/Application.vala:140
 msgid "nxdumptool device connected"
 msgstr ""
 
-#: src/Application.vala:113
+#: src/Application.vala:148
 msgid "nxdumptool device disconnected"
 msgstr ""
 
-#: src/Application.vala:130
+#: src/Application.vala:165
 msgid "File transfer started"
 msgstr ""
 
-#: src/Application.vala:155
+#: src/Application.vala:190
 msgid "File transfer complete"
 msgstr ""
 
-#: src/Application.vala:158 src/Application.vala:164
+#: src/Application.vala:193 src/Application.vala:199
 msgid "Show in folder"
 msgstr ""
 
-#: src/Application.vala:163
+#: src/Application.vala:198
 #, c-format
 msgid "Transfer of file “%s” complete"
 msgstr ""
 
-#: src/Application.vala:185
+#: src/Application.vala:220
 msgid "File transfer canceled"
 msgstr ""
 
-#: src/Application.vala:185
+#: src/Application.vala:220
 msgid "File transfer failed"
 msgstr ""
 
-#: src/Application.vala:192
+#: src/Application.vala:227
 #, c-format
 msgid "Transfer of file “%s” canceled"
 msgstr ""
 
-#: src/Application.vala:192
+#: src/Application.vala:227
 #, c-format
 msgid "Transfer of file “%s” failed"
 msgstr ""
 
-#: src/Application.vala:205
+#: src/Application.vala:240
 msgid ""
 "Launch without a visible window if allowed to in settings, exit otherwise"
 msgstr ""
 
-#: src/Application.vala:206
+#: src/Application.vala:241
 msgid "Print udev rules required for USB access and exit"
 msgstr ""
 
-#: src/Application.vala:207
+#: src/Application.vala:242
 msgid "Print application version and exit"
 msgstr ""
 
-#: src/Application.vala:331
+#: src/Application.vala:366
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:391
+#: src/Application.vala:426
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:398
+#: src/Application.vala:433
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""

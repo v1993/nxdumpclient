@@ -53,6 +53,7 @@ namespace NXDumpClient {
 		int64 header_size;
 		File file;
 		FileOutputStream ostream;
+		FileTransferInhibitor inhibitor;
 	}
 
 	private const string COMMAND_MAGIC = "NXDT";
@@ -376,14 +377,17 @@ namespace NXDumpClient {
 			var filename = (string)istream.read_bytes(0x301, cancellable).get_data();
 			File file;
 			FileOutputStream ostream;
+			FileTransferInhibitor inhibitor;
 
 			try {
 				if (nsp_dump_status == null) {
 					file = yield get_dump_target(filename, file_size, cancellable);
 					ostream = yield file.replace_async(null, false, REPLACE_DESTINATION, Priority.DEFAULT, cancellable);
+					inhibitor = new FileTransferInhibitor();
 				} else {
 					file = nsp_dump_status.file;
 					ostream = nsp_dump_status.ostream;
+					inhibitor = nsp_dump_status.inhibitor;
 				}
 			} catch(Error e) {
 				throw error_to_recoverable(e);
@@ -417,7 +421,8 @@ namespace NXDumpClient {
 					transferred_size = 0,
 					header_size = nsp_header_size,
 					file = file,
-					ostream = ostream
+					ostream = ostream,
+					inhibitor = inhibitor,
 				};
 
 				yield send_status_success();
