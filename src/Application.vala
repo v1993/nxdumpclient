@@ -132,10 +132,10 @@ namespace NXDumpClient {
 		}
 
 		internal void device_added(UsbDeviceClient client) {
-			client.transfer_started.connect(this.on_file_transfer_started);
-			client.transfer_got_empty_file.connect(this.on_file_transfer_complete);
-			client.transfer_complete.connect(this.on_file_transfer_complete);
-			client.transfer_failed.connect(this.on_file_transfer_failed);
+			client.transfer_started.connect(this.file_transfer_started);
+			client.transfer_got_empty_file.connect(this.file_transfer_complete);
+			client.transfer_complete.connect(this.file_transfer_complete);
+			client.transfer_failed.connect(this.file_transfer_failed);
 			if (should_show_desktop_notification()) {
 				var notif = new Notification(_( "nxdumptool device connected"));
 				notif.set_category("device.added");
@@ -151,11 +151,7 @@ namespace NXDumpClient {
 			}
 		}
 
-		private void on_file_transfer_started(UsbDeviceClient dev, File file, bool mass_transfer) {
-			file_transfer_started.begin(file, mass_transfer);
-		}
-
-		private async void file_transfer_started(File file, bool mass_transfer) {
+		private async void file_transfer_started(UsbDeviceClient dev, File file, bool mass_transfer) {
 			try {
 				if (mass_transfer) {
 					return;
@@ -173,11 +169,7 @@ namespace NXDumpClient {
 			}
 		}
 
-		private void on_file_transfer_complete(UsbDeviceClient dev, File file, bool mass_transfer) {
-			file_transfer_complete.begin(file, mass_transfer);
-		}
-
-		private async void file_transfer_complete(File file, bool mass_transfer) {
+		private async void file_transfer_complete(UsbDeviceClient dev, File file, bool mass_transfer) {
 			try {
 				if (mass_transfer) {
 					return;
@@ -207,11 +199,7 @@ namespace NXDumpClient {
 			}
 		}
 
-		private void on_file_transfer_failed(UsbDeviceClient dev, File file, bool cancelled) {
-			file_transfer_failed.begin(file, cancelled);
-		}
-
-		private async void file_transfer_failed(File file, bool cancelled) {
+		private async void file_transfer_failed(UsbDeviceClient dev, File file, bool cancelled) {
 			try {
 				var info = file.query_info(FileAttribute.STANDARD_DISPLAY_NAME, NONE, cancellable);
 				var fname = info.get_display_name();
