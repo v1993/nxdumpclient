@@ -21,6 +21,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.0.1" date="2023-10-30" type="stable" urgency="low">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Fix StartupNotify functionality under flatpak</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.0" date="2023-10-29" type="stable">
       <description>
         <p>First stable release.</p>
