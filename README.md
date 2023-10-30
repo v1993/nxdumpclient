@@ -3,6 +3,8 @@
 ## A client for dumping over USB with [nxdumptool](https://github.com/DarkMatterCore/nxdumptool)
 
 ![GitHub Actions - Build Status](https://img.shields.io/github/actions/workflow/status/v1993/nxdumpclient/flatpak.yml)
+
+[![AUR release package](https://img.shields.io/badge/aur-nxdumpclient-blue)](https://aur.archlinux.org/packages/nxdumpclient)
 [![AUR git package](https://img.shields.io/badge/aur-nxdumpclient--git-blue)](https://aur.archlinux.org/packages/nxdumpclient-git)
 
 [![Flathub Badge](https://dl.flathub.org/assets/badges/flathub-badge-i-en.png)](https://flathub.org/apps/org.v1993.NXDumpClient)
