@@ -3,6 +3,9 @@
 ## A client for dumping over USB with [nxdumptool](https://github.com/DarkMatterCore/nxdumptool)
 
 ![GitHub Actions - Build Status](https://img.shields.io/github/actions/workflow/status/v1993/nxdumpclient/flatpak.yml)
+[![AUR git package](https://img.shields.io/badge/aur-nxdumpclient--git-blue)](https://aur.archlinux.org/packages/nxdumpclient-git)
+
+[![Flathub Badge](https://dl.flathub.org/assets/badges/flathub-badge-i-en.png)](https://flathub.org/apps/org.v1993.NXDumpClient)
 
 ![screenshot](data/screenshot-1.png)
 
@@ -22,7 +25,7 @@ meson install -C build
 
 Please note that a fairly recent distro is required - see dependencies section below.
 
-An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml` (please note that building with flatpak requires initializing git submodules; they are not used otherwise). Use of `flatpak-builder` is out-of-scope for this document - flatpaks are available as CI artifacts and attached to releases and I intend on publishing on Flathub to make installation even easier.
+An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml` (please note that building with flatpak requires initializing git submodules; they are not used otherwise). Use of `flatpak-builder` is out-of-scope for this document - download pre-built package from Flathub if you just want to use the flatpak version.
 
 ### Updating
 
