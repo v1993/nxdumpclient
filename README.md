@@ -15,6 +15,34 @@ Not much to say, really - it just works! You can enable autostart in settings an
 
 ### Official nxdumptool discord server where I and other helpful people can be found: https://discord.gg/SCbbcQx
 
+## Frequently asked questions
+
+### What is the preferred installation method?
+
+Short version: AUR (stable) package if you're on Arch-based distro, flatpak from Flathub otherwise. Installing flatpaks attached to releases is generally discouraged (these are provided for the sake of completeness) - please install from Flathub if possible instead.
+
+Long version: Manual building or using unofficial packages may be viable options in non-Arch environments, but Manjaro/GNOME's Flatpak SDK (whichever is less up-to-date at the moment) is what ultimately determines what is the highest library version features from which I'll consider using. While I'm willing to support more distros natively, I won't be going out of my way to do so (a few tweaks to build system are fine, having to manually implement a feature present in newer version of a library/tool is not).
+
+### Where are the dumps stored?
+
+By default in your Downloads folder. You can change path (and a couple of other handy settings) in preferences.
+
+### NSP/NCA dumps always abort with checksum error
+
+Additional verification is implemented compared to official `nxdt_host.py` program for those file types. An unfortunate side effect of this is that dumping with most non-default options will lead to checksum failure (since it modifies file contents but not initial checksum).
+
+You can either dump with default settings (which you probably should be doing anyways) or disable additional verification in preferences.
+
+A slightly different method that accounts for non-standard dump settings exists; I intend to add it later on.
+
+### I get permissions error. Why?
+
+Installing special udev rules is required for user access to device. You should have been prompted to do so interactively on first launch if using flatpak; system-wide installation installs rules automatically. Please report an issue if you think udev rules should have been installed by now - make sure to mention installation method in your report.
+
+### Why does flatpak version require network access, anyways?
+
+Because of how udev events are communicated on Linux. You can manually revoke it if you so desire, but that will break support for device hotplug - i.e. you'll have to always connect your switch before starting the program.
+
 ## Building
 
 ```bash
@@ -49,21 +77,3 @@ Note for those using `flatpak-builder`: you'll want to update git submodules as 
 * GUsb (reasonably new)
 * libportal (optional for non-sandbox builds)
 * blueprint-compiler >= 0.10 (build-only; automatically fetched by meson if not available)
-
-## Frequently asked questions
-
-### Where are the dumps stored?
-
-By default in your Downloads folder. You can change path (and a couple of other handy settings) in preferences.
-
-### NSP/NCA dumps always abort with checksum error
-
-Additional verification is implemented compared to official `nxdt_host.py` program for those file types. An unfortunate side effect of this is that dumping with most non-default options will lead to checksum failure (since it modifies file contents but not initial checksum).
-
-You can either dump with default settings (which you probably should be doing anyways) or disable additional verification in preferences.
-
-A slightly different method that accounts for non-standard dump settings exists; I intend to add it later on.
-
-### I get permissions error. Why?
-
-Installing special udev rules is required for user access to device. You should have been prompted to do so interactively on first launch if using flatpak; system-wide installation installs rules automatically. Please report an issue if you think udev rules should have been installed by now - make sure to mention installation method in your report.
