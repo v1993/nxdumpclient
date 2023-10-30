@@ -1,0 +1,32 @@
+name: Publish release to AUR
+
+on:
+  release:
+    types: published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preprocess PKGBUILD
+        shell: bash
+        run: |
+          set -a
+          PKGBUILD_VERSION="$(printf '%s' ${GITHUB_REF_NAME} | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g')"
+          PKGBUILD_REF="${GITHUB_REF}"
+          envsubst '$PKGBUILD_VERSION,$PKGBUILD_REF' < .github/PKGBUILD.in > PKGBUILD
+
+      - name: Upload to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v2.7.0
+        with:
+          pkgname: nxdumpclient
+          pkgbuild: ./PKGBUILD
+          updpkgsums: true
+          test: true
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "[GitHub Action] Release ${{ github.ref_name }}"
