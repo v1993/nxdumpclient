@@ -22,7 +22,13 @@ extern const string NXDC_EXECUTABLE;
 
 // Debug option to use libportal even out of sandbox.
 // This is theoretically safe to have always, but may hit bugs in portal backends.
-const bool FORCE_LIBPORTAL = false;
+private const bool FORCE_LIBPORTAL = false;
+
+public enum NcaChecksumMode {
+	COMPATIBLE,
+	STRICT,
+	NONE
+}
 
 namespace NXDumpClient {
 	[GtkTemplate (ui = "/org/v1993/NXDumpClient/PreferencesWindow.ui")]
@@ -32,7 +38,7 @@ namespace NXDumpClient {
 		[GtkChild]
 		private unowned Adw.SwitchRow flatten_output;
 		[GtkChild]
-		private unowned Adw.SwitchRow checksum_nca;
+		private unowned Adw.ComboRow nca_checksum_mode;
 		[GtkChild]
 		private unowned Adw.SwitchRow allow_background_row;
 		[GtkChild]
@@ -90,8 +96,8 @@ namespace NXDumpClient {
 			);
 
 			app.settings.bind(
-				"checksum-nca",
-				checksum_nca, "active",
+				"nca-checksum-mode",
+				nca_checksum_mode, "selected",
 				DEFAULT
 			);
 

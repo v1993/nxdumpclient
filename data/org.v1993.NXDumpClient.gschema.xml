@@ -18,12 +18,15 @@
         dump directory and reduces nesting for multi-file dumps.
       </description>
     </key>
-    <key name="checksum-nca" type="b">
-      <default>true</default>
-      <summary>Compute hashes of NCA files</summary>
+    <key name="nca-checksum-mode" type="u">
+      <range min="0" max="2"/>
+      <default>0</default>
+      <summary>Checksum verification mode for NCA/NSP files (enumeration)</summary>
       <description>
-        NCA file names are SHA256 checksums of their contents. This option
-        allows to verify checksums of dumped NCA and NSP files.
+        (0) Compatible mode parses NSP header, which makes it work with non-standard dump options but delays verification until the end and disables it for standalone NCAs.
+        (1) Strict mode takes checksums from NCA filenames, which allows to abort dump early in case of a mismatch.
+        (2) None disables checksum verification completely.
+        Yes, I know that GSettings support real enumerations, but they are more annoying to use and provide little benefit in my case.
       </description>
     </key>
     <key name="prompted-for-udev-rules" type="b">
