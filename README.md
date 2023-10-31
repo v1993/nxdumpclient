@@ -27,13 +27,17 @@ Long version: Manual building or using unofficial packages may be viable options
 
 By default in your Downloads folder. You can change path (and a couple of other handy settings) in preferences.
 
-### NSP/NCA dumps always abort with checksum error
+### Why are there different NSP/NCA checksum modes and which one should I use?
 
-Additional verification is implemented compared to official `nxdt_host.py` program for those file types. An unfortunate side effect of this is that dumping with most non-default options will lead to checksum failure (since it modifies file contents but not initial checksum).
+A fragment of NCA's SHA256 checksum is contained within its filename, allowing to verify its contents. Among other possible file types, NSPs typically contain multiple NCAs as well as a list of filenames in their header (which is sent last during transfer). When dumping, the original name of NCA is sent with it, although it might not check out with its contents if certain dump options that modify them are enabled. However, nxdumptool later sends adjusted NCA names within NSP header.
 
-You can either dump with default settings (which you probably should be doing anyways) or disable additional verification in preferences.
+* Compatible mode uses filenames from NSP header, so it will work correctly if NCAs are modified by nxdumptool, but can only detect errors after the transfer has finished.
+* Strict mode uses original NCA filenames, so it can detect errors as soon as the NCA is transferred, but will erroneously fail if NCA was modified by nxdumptool.
+* None, as its name implies, completely disables checksum computation and verification.
 
-A slightly different method that accounts for non-standard dump settings exists; I intend to add it later on.
+As a result, strict mode is recommended, but only if you do not use nxdumptool settings that mess with NCA contents -- which is almost everything save for "remove console specific data" and "generate authoringtool data". Compatible mode should be used if you, for whatever reason, want to use these options (hint: you probably don't). "None" should only be used in unorthodox cases like a badly named NCA file in a RomFS dump - files are hashed during transfer (i.e. never read back from drive) and checksum computation is very unlikely to have any meaningful impact on transfer speed.
+
+P.S.: standalone NCAs are never tampered with, so strict mode check is used for them in both checksum modes. XCIs do not support additional verification.
 
 ### I get permissions error. Why?
 

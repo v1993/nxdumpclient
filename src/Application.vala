@@ -55,7 +55,9 @@ namespace NXDumpClient {
 		public Settings settings { get; private set; }
 		public File destination_directory { get; protected set; }
 		public bool flatten_output { get; protected set; }
-		public bool checksum_nca { get; protected set; }
+		public NcaChecksumMode nca_checksum_mode { get; protected set; }
+
+		protected uint nca_checksum_mode_proxy { set { nca_checksum_mode = (NcaChecksumMode)value; } }
 
 		private bool hold_background_reference_ = false;
 		public bool hold_background_reference {
@@ -278,18 +280,18 @@ namespace NXDumpClient {
 			settings = new GLib.Settings(application_id);
 			settings.bind_with_mapping("dump-path",
 				this, "destination-directory",
-				NO_SENSITIVITY,
+				NO_SENSITIVITY | GET,
 				FileSettingUtils.get, FileSettingUtils.set, (void*)get_default_dump_path, null
 			);
 
 			settings.bind("flatten-output",
 				this, "flatten-output",
-				NO_SENSITIVITY
+				NO_SENSITIVITY | GET
 			);
 
-			settings.bind("checksum-nca",
-				this, "checksum-nca",
-				NO_SENSITIVITY
+			settings.bind("nca-checksum-mode",
+				this, "nca-checksum-mode-proxy",
+				NO_SENSITIVITY | GET
 			);
 
 			// allow-background is bound in bind_background.
@@ -299,7 +301,7 @@ namespace NXDumpClient {
 			#if PROMPT_FOR_UDEV_RULES
 			settings.bind("prompted-for-udev-rules",
 				this, "prompted-for-udev-rules",
-				NO_SENSITIVITY
+				NO_SENSITIVITY | GET | SET
 			);
 			#endif
 

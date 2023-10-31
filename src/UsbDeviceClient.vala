@@ -54,6 +54,7 @@ namespace NXDumpClient {
 		File file;
 		FileOutputStream ostream;
 		FileTransferInhibitor inhibitor;
+		GenericArray<string>? nca_checksums; // Prefixes for NCA files
 	}
 
 	private const string COMMAND_MAGIC = "NXDT";
@@ -65,6 +66,8 @@ namespace NXDumpClient {
 	private const uint DEFAULT_TIMEOUT = 5000;
 	private const uint32 STATUS_SUCCESS = 0x0;
 	private const uint32 BLOCK_SIZE = 0x800000;
+
+	private const string NSP_MAGIC = "PFS0";
 
 	// Throw errors that are not fatal to device as UsbDeviceProtocolError
 	private Error error_to_recoverable(Error err) {
@@ -364,6 +367,7 @@ namespace NXDumpClient {
 			if (command.length != 0x320) {
 				throw new UsbDeviceProtocolError.MALFORMED_COMMAND("SendFileProperties command with invalid length 0x%X", command.length);
 			}
+			var checksum_mode = new Application().nca_checksum_mode;
 			var istream = make_input_stream(command);
 
 			var file_size = istream.read_int64(cancellable);
@@ -423,6 +427,7 @@ namespace NXDumpClient {
 					file = file,
 					ostream = ostream,
 					inhibitor = inhibitor,
+					nca_checksums = checksum_mode == COMPATIBLE ? new GenericArray<string>() : null,
 				};
 
 				yield send_status_success();
@@ -466,11 +471,13 @@ namespace NXDumpClient {
 			}
 
 			Checksum? checksum = null;
-			if (filename.has_suffix(".nca") && new Application().checksum_nca) {
-				checksum = new Checksum(SHA256);
+			if (filename.has_suffix(".nca")) {
+				if (checksum_mode != NONE || nsp_dump_status?.nca_checksums != null) {
+					checksum = new Checksum(SHA256);
+				}
 			}
 
-			debug("File transfer started");
+			debug("Transfer of file %s started", filename);
 
 			/*
 			 * We're in file transfer mode now. As implemented currently, it means we must not report errors to console,
@@ -546,17 +553,25 @@ namespace NXDumpClient {
 				}
 
 				if (checksum != null) {
-					var basename = Path.get_basename(filename);
 					var checksum_string_abridged = checksum.get_string()[:32];
-					if (!basename.has_prefix(checksum_string_abridged)) {
-						if (!ostream.is_closed()) {
-							// Avoid synchronous closing in destructor
-							yield ostream.close_async(Priority.DEFAULT, cancellable);
-						}
+					// Strict mode or standalone (thus unmodified) NCA
+					if (checksum_mode == STRICT || (checksum_mode == COMPATIBLE && nsp_dump_status == null)) {
+						var basename = Path.get_basename(filename);
+						if (!basename.has_prefix(checksum_string_abridged)) {
+							if (!ostream.is_closed()) {
+								// Avoid synchronous closing in destructor
+								yield ostream.close_async(Priority.DEFAULT, cancellable);
+							}
 
-						throw new UsbDeviceProtocolError.IO_ERROR(_("NCA checksum verification failed (non-standard dump options?)"));
-					} else {
-						debug("Checksum verification passed");
+							throw new UsbDeviceProtocolError.IO_ERROR(_("NCA checksum verification failed (non-standard dump options?)"));
+						} else {
+							debug("Checksum verification passed");
+						}
+					}
+					// Always check for this so that messing with settings during the transfer will not make it fail
+					if (nsp_dump_status?.nca_checksums != null) {
+						nsp_dump_status.nca_checksums.add((owned)checksum_string_abridged);
+						debug("Checksum pushed into queue");
 					}
 				}
 
@@ -585,6 +600,10 @@ namespace NXDumpClient {
 				transfer_file_name_inner = _("NSP header");
 				transfer_next_inner_file.emit();
 
+				if (nsp_dump_status.nca_checksums != null) {
+					verify_nsp_checksums(header, nsp_dump_status.nca_checksums);
+				}
+
 				var ostream = nsp_dump_status.ostream;
 				ostream.seek(0, SET, cancellable);
 				debug("Writing header");
@@ -600,6 +619,43 @@ namespace NXDumpClient {
 			} catch(Error e) {
 				transfer_failed.emit(nsp_dump_status.file, false);
 				throw error_to_recoverable(e);
+			}
+		}
+
+		private void verify_nsp_checksums(uint8[] header, GenericArray<string> checksums) throws Error {
+			var istream = make_input_stream(header);
+			if (istream.read_bytes(NSP_MAGIC.length, cancellable).compare(new Bytes.static(NSP_MAGIC.data)) != 0) {
+				throw new UsbDeviceProtocolError.IO_ERROR("NSP header has invalid magic");
+			}
+
+			var entry_count = istream.read_uint32(cancellable);
+			if (checksums.length > entry_count) {
+				throw new UsbDeviceProtocolError.IO_ERROR("NSP header has less entries than there are checksummed files");
+			}
+
+			/*var string_table_size =*/ istream.read_uint32(cancellable);
+			istream.seek(0x4, CUR, cancellable); // Reserved
+			istream.seek(0x18 * entry_count, CUR, cancellable); // PartitionEntry table
+			int checksums_idx = 0;
+
+			for (int i = 0; i < entry_count; ++i) {
+				var fname = istream.read_upto("\0", 1, null, cancellable);
+				if ((i + 1) != entry_count) {
+					istream.read_byte(cancellable);
+				}
+
+				if (fname.has_suffix(".nca")) {
+					var checksum = checksums[checksums_idx++];
+					if (!fname.has_prefix(checksum)) {
+						throw new UsbDeviceProtocolError.IO_ERROR(_("NCA checksum verification failed"));
+					}
+
+					debug("Delayed checksum verification for file %s passed", fname);
+				}
+			}
+
+			if (checksums_idx != checksums.length) {
+				throw new UsbDeviceProtocolError.IO_ERROR("NCA checksum count mismatch");
 			}
 		}
 

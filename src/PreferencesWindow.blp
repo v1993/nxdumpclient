@@ -39,9 +39,15 @@ template $NXDumpClientPreferencesWindow: Adw.PreferencesWindow {
 				subtitle: _("Avoid creating subfolders unless necessary");
 			}
 
-			Adw.SwitchRow checksum_nca {
-				title: C_("setting", "Verify NCA checksums");
-				subtitle: _("Extra integrity verification but will error out with non-standard dump options");
+			Adw.ComboRow nca_checksum_mode {
+				title: C_("setting", "NSP/NCA checksum verification");
+				subtitle: _("“Strict” can catch errors earlier but will fail with certain dump settings");
+
+				model: StringList {strings [
+					C_("checksum mode setting", "Compatible"),
+					C_("checksum mode setting", "Strict"),
+					C_("checksum mode setting", "None")
+				]};
 			}
 		}
 	}

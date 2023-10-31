@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-29 15:57+0300\n"
+"POT-Creation-Date: 2023-10-31 18:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:235
+#: data/org.v1993.NXDumpClient.appdata.xml.in:15 src/Application.vala:239
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
@@ -48,22 +48,30 @@ msgid "NX Dump Tool receiving a file"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:26
+msgid "Fixes:"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:28
+msgid "Fix StartupNotify functionality under flatpak"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:34
 msgid "First stable release."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:27
+#: data/org.v1993.NXDumpClient.appdata.xml.in:35
 msgid "Release highlights:"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:29
+#: data/org.v1993.NXDumpClient.appdata.xml.in:37
 msgid "Support for running in background and autostart"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:30
+#: data/org.v1993.NXDumpClient.appdata.xml.in:38
 msgid "Confirm exit if file transfer is in progress"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:36
+#: data/org.v1993.NXDumpClient.appdata.xml.in:44
 msgid "Initial release."
 msgstr ""
 
@@ -88,39 +96,44 @@ msgid ""
 "directory and reduces nesting for multi-file dumps."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:23
-msgid "Compute hashes of NCA files"
-msgstr ""
-
 #: data/org.v1993.NXDumpClient.gschema.xml:24
-msgid ""
-"NCA file names are SHA256 checksums of their contents. This option allows to "
-"verify checksums of dumped NCA and NSP files."
+msgid "Checksum verification mode for NCA/NSP files (enumeration)"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:31
+#: data/org.v1993.NXDumpClient.gschema.xml:25
+msgid ""
+"(0) Compatible mode parses NSP header, which makes it work with non-standard "
+"dump options but delays verification until the end and disables it for "
+"standalone NCAs. (1) Strict mode takes checksums from NCA filenames, which "
+"allows to abort dump early in case of a mismatch. (2) None disables checksum "
+"verification completely. Yes, I know that GSettings support real "
+"enumerations, but they are more annoying to use and provide little benefit "
+"in my case."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.gschema.xml:34
 msgid "Has user closed udev rules prompt"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:32
+#: data/org.v1993.NXDumpClient.gschema.xml:35
 msgid "This is only used in cases where udev rules must me manually installed."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:38
+#: data/org.v1993.NXDumpClient.gschema.xml:41
 msgid "If application should continue running in background without a window"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:39
+#: data/org.v1993.NXDumpClient.gschema.xml:42
 msgid ""
 "Desktop notifications are used to communicate status in this case. Pass `--"
 "background` when this option is enabled to launch without a window."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:46
+#: data/org.v1993.NXDumpClient.gschema.xml:49
 msgid "Status of application's autostart capability"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.gschema.xml:47
+#: data/org.v1993.NXDumpClient.gschema.xml:50
 msgid ""
 "If application is expected to be launched at boot. Modifying this option "
 "manually will do nothing but confuse the application."
@@ -275,109 +288,113 @@ msgstr ""
 msgid "Error handling a new device"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:157
+#: src/UsbDeviceClient.vala:161
 #, c-format
 msgid "Not enough space for dump (%s required)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:557
+#: src/UsbDeviceClient.vala:567
 msgid "NCA checksum verification failed (non-standard dump options?)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:585
+#: src/UsbDeviceClient.vala:601
 msgid "NSP header"
+msgstr ""
+
+#: src/UsbDeviceClient.vala:651
+msgid "NCA checksum verification failed"
 msgstr ""
 
 #: src/Application.vala:36
 msgid "File transfer is in progres"
 msgstr ""
 
-#: src/Application.vala:103
+#: src/Application.vala:105
 msgid "Confirm exit"
 msgstr ""
 
-#: src/Application.vala:103
+#: src/Application.vala:105
 msgid ""
 "A file transfer is currently in progress.\n"
 "Are you sure you want to quit?"
 msgstr ""
 
-#: src/Application.vala:108
+#: src/Application.vala:110
 msgctxt "deny app exit"
 msgid "Cancel"
 msgstr ""
 
-#: src/Application.vala:109
+#: src/Application.vala:111
 msgctxt "confirm app exit"
 msgid "Confirm exit"
 msgstr ""
 
-#: src/Application.vala:140
+#: src/Application.vala:142
 msgid "nxdumptool device connected"
 msgstr ""
 
-#: src/Application.vala:148
+#: src/Application.vala:150
 msgid "nxdumptool device disconnected"
 msgstr ""
 
-#: src/Application.vala:161
+#: src/Application.vala:163
 msgid "File transfer started"
 msgstr ""
 
-#: src/Application.vala:182
+#: src/Application.vala:185
 msgid "File transfer complete"
 msgstr ""
 
-#: src/Application.vala:185 src/Application.vala:191
+#: src/Application.vala:188 src/Application.vala:194
 msgid "Show in folder"
 msgstr ""
 
-#: src/Application.vala:190
+#: src/Application.vala:193
 #, c-format
 msgid "Transfer of file “%s” complete"
 msgstr ""
 
-#: src/Application.vala:208
+#: src/Application.vala:212
 msgid "File transfer canceled"
 msgstr ""
 
-#: src/Application.vala:208
+#: src/Application.vala:212
 msgid "File transfer failed"
 msgstr ""
 
-#: src/Application.vala:215
+#: src/Application.vala:219
 #, c-format
 msgid "Transfer of file “%s” canceled"
 msgstr ""
 
-#: src/Application.vala:215
+#: src/Application.vala:219
 #, c-format
 msgid "Transfer of file “%s” failed"
 msgstr ""
 
-#: src/Application.vala:228
+#: src/Application.vala:232
 msgid ""
 "Launch without a visible window if allowed to in settings, exit otherwise"
 msgstr ""
 
-#: src/Application.vala:229
+#: src/Application.vala:233
 msgid "Print udev rules required for USB access and exit"
 msgstr ""
 
-#: src/Application.vala:230
+#: src/Application.vala:234
 msgid "Print application version and exit"
 msgstr ""
 
-#: src/Application.vala:354
+#: src/Application.vala:358
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:414
+#: src/Application.vala:418
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:421
+#: src/Application.vala:425
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""
@@ -435,26 +452,40 @@ msgstr ""
 
 #: src/PreferencesWindow.blp:43
 msgctxt "setting"
-msgid "Verify NCA checksums"
+msgid "NSP/NCA checksum verification"
 msgstr ""
 
 #: src/PreferencesWindow.blp:44
 msgid ""
-"Extra integrity verification but will error out with non-standard dump "
-"options"
+"“Strict” can catch errors earlier but will fail with certain dump settings"
 msgstr ""
 
-#: src/PreferencesWindow.vala:190
+#: src/PreferencesWindow.blp:47
+msgctxt "checksum mode setting"
+msgid "Compatible"
+msgstr ""
+
+#: src/PreferencesWindow.blp:48
+msgctxt "checksum mode setting"
+msgid "Strict"
+msgstr ""
+
+#: src/PreferencesWindow.blp:49
+msgctxt "checksum mode setting"
+msgid "None"
+msgstr ""
+
+#: src/PreferencesWindow.vala:196
 msgctxt "reason for background activity"
 msgid "Dumping applications without interaction"
 msgstr ""
 
-#: src/PreferencesWindow.vala:197
+#: src/PreferencesWindow.vala:203
 #, c-format
 msgid "Permission request failed: %s"
 msgstr ""
 
-#: src/PreferencesWindow.vala:240
+#: src/PreferencesWindow.vala:246
 #, c-format
 msgid "Failed to toggle autostart: %s"
 msgstr ""
