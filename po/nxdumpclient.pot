@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-31 18:34+0300\n"
+"POT-Creation-Date: 2023-10-31 18:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,30 +48,36 @@ msgid "NX Dump Tool receiving a file"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:26
-msgid "Fixes:"
-msgstr ""
-
-#: data/org.v1993.NXDumpClient.appdata.xml.in:28
-msgid "Fix StartupNotify functionality under flatpak"
-msgstr ""
-
-#: data/org.v1993.NXDumpClient.appdata.xml.in:34
-msgid "First stable release."
-msgstr ""
-
-#: data/org.v1993.NXDumpClient.appdata.xml.in:35
+#: data/org.v1993.NXDumpClient.appdata.xml.in:43
 msgid "Release highlights:"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:37
+#: data/org.v1993.NXDumpClient.appdata.xml.in:28
+msgid ""
+"Improve checksum verification - support non-standard dump options by default"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:34
+msgid "Fixes:"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:36
+msgid "Fix StartupNotify functionality under flatpak"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:42
+msgid "First stable release."
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:45
 msgid "Support for running in background and autostart"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:38
+#: data/org.v1993.NXDumpClient.appdata.xml.in:46
 msgid "Confirm exit if file transfer is in progress"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:44
+#: data/org.v1993.NXDumpClient.appdata.xml.in:52
 msgid "Initial release."
 msgstr ""
 
@@ -288,20 +294,20 @@ msgstr ""
 msgid "Error handling a new device"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:161
+#: src/UsbDeviceClient.vala:160
 #, c-format
 msgid "Not enough space for dump (%s required)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:567
+#: src/UsbDeviceClient.vala:566
 msgid "NCA checksum verification failed (non-standard dump options?)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:601
+#: src/UsbDeviceClient.vala:600
 msgid "NSP header"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:651
+#: src/UsbDeviceClient.vala:650
 msgid "NCA checksum verification failed"
 msgstr ""
 
