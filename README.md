@@ -19,7 +19,7 @@ Not much to say, really - it just works! You can enable autostart in settings an
 
 ### What is the preferred installation method?
 
-Short version: AUR (stable) package if you're on Arch-based distro, flatpak from Flathub otherwise. Installing flatpaks attached to releases is generally discouraged (these are provided for the sake of completeness) - please install from Flathub if possible instead.
+Short version: AUR (stable) package if you're on Arch-based distro, flatpak from Flathub otherwise. Installing flatpaks from CI is normally heavily discouraged since those won't be automatically updated - please install from Flathub if possible instead.
 
 Long version: Manual building or using unofficial packages may be viable options in non-Arch environments, but Manjaro/GNOME's Flatpak SDK (whichever is less up-to-date at the moment) is what ultimately determines what is the highest library version features from which I'll consider using. While I'm willing to support more distros natively, I won't be going out of my way to do so (a few tweaks to build system are fine, having to manually implement a feature present in newer version of a library/tool is not).
 
