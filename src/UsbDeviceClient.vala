@@ -181,6 +181,7 @@ namespace NXDumpClient {
 		public string transfer_file_name_inner { get; private set; default = ""; } // Used in NSP mode
 		public int64 transfer_total_bytes { get; private set; default = 0; }
 		public int64 transfer_current_bytes { get; private set; default = 0; }
+		public int64 transfer_started_time { get; private set; default = 0; }
 
 		public uint16 max_packet_size { get {
 			if (endpoint_input != null) {
@@ -415,6 +416,7 @@ namespace NXDumpClient {
 					transfer_file_name_inner = "";
 					transfer_total_bytes = file_size;
 					transfer_current_bytes = 0;
+					transfer_started_time = get_monotonic_time();
 					status = TRANSFER;
 				} finally {
 					thaw_notify();
@@ -460,6 +462,7 @@ namespace NXDumpClient {
 					transfer_file_name_inner = "";
 					transfer_total_bytes = file_size;
 					transfer_current_bytes = 0;
+					transfer_started_time = get_monotonic_time();
 				} finally {
 					thaw_notify();
 				}

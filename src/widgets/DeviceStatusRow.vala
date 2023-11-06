@@ -19,6 +19,8 @@
  */
 
 namespace NXDumpClient {
+	private const uint32 MIN_TRANSFER_SPEED_SIZE = 0x800000 * 5;
+
 	[GtkTemplate (ui = "/org/v1993/NXDumpClient/widgets/DeviceStatusRow.ui")]
 	class DeviceStatusRow: Adw.Bin {
 		protected UsbDeviceClient? device { get; set; default = null; }
@@ -118,10 +120,26 @@ namespace NXDumpClient {
 		requires(device != null)
 		{
 			transfer_fraction = ((double)device.transfer_current_bytes) / ((double)device.transfer_total_bytes);
-			transfer_text = C_("file transfer progress", "%s / %s").printf(
+			// TODO: use StringBuilder.take on GLib >= 2.78
+			var builder = new StringBuilder(C_("file transfer progress", "%s / %s").printf(
 				format_size(device.transfer_current_bytes),
 				format_size(device.transfer_total_bytes)
-			);
+			));
+
+			var time_passed = get_monotonic_time() - device.transfer_started_time;
+			if (device.transfer_current_bytes >= MIN_TRANSFER_SPEED_SIZE && time_passed > 0) {
+				var bytes_remaining = device.transfer_total_bytes - device.transfer_current_bytes;
+				var time_remaining = time_passed * bytes_remaining / device.transfer_current_bytes / 1000000;
+				var bytes_per_second = device.transfer_current_bytes * 1000000 / time_passed;
+				builder.append_c(' ');
+				builder.append_printf(C_("file transfer speed and min:sec remaining", "(%s/s, %02lld:%02lld remaining)"),
+					format_size(bytes_per_second),
+					time_remaining / 60,
+					time_remaining % 60
+				);
+			}
+
+			transfer_text = builder.free_and_steal();
 		}
 
 		private void transfer_started_cb(UsbDeviceClient client, File file, bool mass_transfer) {
