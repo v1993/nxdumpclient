@@ -65,7 +65,7 @@ namespace NXDumpClient {
 	private const uint32 RESPONSE_SIZE = 0x10;
 	private const uint DEFAULT_TIMEOUT = 5000;
 	private const uint32 STATUS_SUCCESS = 0x0;
-	private const uint32 BLOCK_SIZE = 0x800000;
+	internal const uint32 BLOCK_SIZE = 0x800000;
 
 	private const string NSP_MAGIC = "PFS0";
 
@@ -181,6 +181,7 @@ namespace NXDumpClient {
 		public string transfer_file_name_inner { get; private set; default = ""; } // Used in NSP mode
 		public int64 transfer_total_bytes { get; private set; default = 0; }
 		public int64 transfer_current_bytes { get; private set; default = 0; }
+		public int64 transfer_started_time { get; private set; default = 0; }
 
 		public uint16 max_packet_size { get {
 			if (endpoint_input != null) {
@@ -415,6 +416,7 @@ namespace NXDumpClient {
 					transfer_file_name_inner = "";
 					transfer_total_bytes = file_size;
 					transfer_current_bytes = 0;
+					transfer_started_time = 0;
 					status = TRANSFER;
 				} finally {
 					thaw_notify();
@@ -460,6 +462,7 @@ namespace NXDumpClient {
 					transfer_file_name_inner = "";
 					transfer_total_bytes = file_size;
 					transfer_current_bytes = 0;
+					transfer_started_time = 0;
 				} finally {
 					thaw_notify();
 				}
@@ -528,6 +531,10 @@ namespace NXDumpClient {
 
 					if (checksum != null) {
 						checksum.update(incoming_data, incoming_data.length);
+					}
+
+					if (transfer_started_time == 0) {
+						transfer_started_time = get_monotonic_time();
 					}
 
 					transfer_progress.emit();

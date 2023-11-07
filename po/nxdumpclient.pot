@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-31 18:55+0300\n"
+"POT-Creation-Date: 2023-11-07 03:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -194,50 +194,62 @@ msgstr ""
 msgid "Transfer progress"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:86
+#: src/widgets/DeviceStatusRow.vala:88
 msgctxt "status"
 msgid "Uninitialized"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:89
+#: src/widgets/DeviceStatusRow.vala:91
 msgctxt "status"
 msgid "Connected"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:92
+#: src/widgets/DeviceStatusRow.vala:94
 msgctxt "status"
 msgid "Transferring file"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:95
+#: src/widgets/DeviceStatusRow.vala:97
 msgctxt "status"
 msgid "Fatal error"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:121
+#. TODO: use StringBuilder.take on GLib >= 2.78
+#: src/widgets/DeviceStatusRow.vala:124
 #, c-format
 msgctxt "file transfer progress"
 msgid "%s / %s"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:162
+#: src/widgets/DeviceStatusRow.vala:138
+#, c-format
+msgctxt "file transfer speed and min:sec remaining"
+msgid "(%s/s, %02lld:%02lld remaining)"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:144
+msgctxt "file transfer speed and min:sec placeholder"
+msgid "(-- B/s, --:-- remaining)"
+msgstr ""
+
+#: src/widgets/DeviceStatusRow.vala:186
 msgid "USB 1.1"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:165
+#: src/widgets/DeviceStatusRow.vala:189
 msgid "USB 2.0"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:168
+#: src/widgets/DeviceStatusRow.vala:192
 msgid "USB 3.0"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:171
+#: src/widgets/DeviceStatusRow.vala:195
 msgctxt "speed string"
 msgid "N/A"
 msgstr ""
 
-#: src/widgets/DeviceStatusRow.vala:179
+#: src/widgets/DeviceStatusRow.vala:203
 msgctxt "version string"
 msgid "N/A"
 msgstr ""
@@ -299,15 +311,15 @@ msgstr ""
 msgid "Not enough space for dump (%s required)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:566
+#: src/UsbDeviceClient.vala:573
 msgid "NCA checksum verification failed (non-standard dump options?)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:600
+#: src/UsbDeviceClient.vala:607
 msgid "NSP header"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:650
+#: src/UsbDeviceClient.vala:657
 msgid "NCA checksum verification failed"
 msgstr ""
 
