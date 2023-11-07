@@ -19,7 +19,7 @@
  */
 
 namespace NXDumpClient {
-	private const uint32 MIN_TRANSFER_SPEED_SIZE = 0x800000 * 5;
+	private const uint32 MIN_TRANSFER_SPEED_SIZE = BLOCK_SIZE * 5;
 
 	[GtkTemplate (ui = "/org/v1993/NXDumpClient/widgets/DeviceStatusRow.ui")]
 	class DeviceStatusRow: Adw.Bin {
@@ -126,17 +126,23 @@ namespace NXDumpClient {
 				format_size(device.transfer_total_bytes)
 			));
 
-			var time_passed = get_monotonic_time() - device.transfer_started_time;
-			if (device.transfer_current_bytes >= MIN_TRANSFER_SPEED_SIZE && time_passed > 0) {
-				var bytes_remaining = device.transfer_total_bytes - device.transfer_current_bytes;
-				var time_remaining = time_passed * bytes_remaining / device.transfer_current_bytes / 1000000;
-				var bytes_per_second = device.transfer_current_bytes * 1000000 / time_passed;
+			if (device.transfer_total_bytes >= MIN_TRANSFER_SPEED_SIZE) {
+				var time_passed = get_monotonic_time() - device.transfer_started_time;
+				var current_bytes_adjusted = device.transfer_current_bytes - BLOCK_SIZE;
 				builder.append_c(' ');
-				builder.append_printf(C_("file transfer speed and min:sec remaining", "(%s/s, %02lld:%02lld remaining)"),
-					format_size(bytes_per_second),
-					time_remaining / 60,
-					time_remaining % 60
-				);
+				if (current_bytes_adjusted > 0 && time_passed > 0) {
+					// Time is measured after the first transfer, so skip it
+					var bytes_remaining = device.transfer_total_bytes - current_bytes_adjusted;
+					var time_remaining = time_passed * bytes_remaining / current_bytes_adjusted / 1000000;
+					var bytes_per_second = current_bytes_adjusted * 1000000 / time_passed;
+					builder.append_printf(C_("file transfer speed and min:sec remaining", "(%s/s, %02lld:%02lld remaining)"),
+						format_size(bytes_per_second),
+						time_remaining / 60,
+						time_remaining % 60
+					);
+				} else {
+					builder.append(C_("file transfer speed and min:sec placeholder", "(-- B/s, --:-- remaining)"));
+				}
 			}
 
 			transfer_text = builder.free_and_steal();
