@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-07 03:53+0300\n"
+"POT-Creation-Date: 2023-11-07 04:14+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,36 +48,41 @@ msgid "NX Dump Tool receiving a file"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:26
-#: data/org.v1993.NXDumpClient.appdata.xml.in:43
+#: data/org.v1993.NXDumpClient.appdata.xml.in:34
+#: data/org.v1993.NXDumpClient.appdata.xml.in:51
 msgid "Release highlights:"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:28
+msgid "Add basic speed and remaining time estimation"
+msgstr ""
+
+#: data/org.v1993.NXDumpClient.appdata.xml.in:36
 msgid ""
 "Improve checksum verification - support non-standard dump options by default"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:34
+#: data/org.v1993.NXDumpClient.appdata.xml.in:42
 msgid "Fixes:"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:36
+#: data/org.v1993.NXDumpClient.appdata.xml.in:44
 msgid "Fix StartupNotify functionality under flatpak"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:42
+#: data/org.v1993.NXDumpClient.appdata.xml.in:50
 msgid "First stable release."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:45
+#: data/org.v1993.NXDumpClient.appdata.xml.in:53
 msgid "Support for running in background and autostart"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:46
+#: data/org.v1993.NXDumpClient.appdata.xml.in:54
 msgid "Confirm exit if file transfer is in progress"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:52
+#: data/org.v1993.NXDumpClient.appdata.xml.in:60
 msgid "Initial release."
 msgstr ""
 

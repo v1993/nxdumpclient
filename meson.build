@@ -1,5 +1,5 @@
 project('nxdumpclient', ['c', 'vala'],
-          version: '1.1.0',
+          version: '1.1.1',
     meson_version: '>= 0.64.0',
   default_options: [ 'warning_level=2', 'werror=false', ],
 )
