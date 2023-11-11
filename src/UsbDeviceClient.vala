@@ -57,11 +57,13 @@ namespace NXDumpClient {
 		GenericArray<string>? nca_checksums; // Prefixes for NCA files
 	}
 
+	[Flags]
+	private enum ClientFeatures {
+		NONE = 0,
+	}
+
 	private const string COMMAND_MAGIC = "NXDT";
 	private const uint32 HEADER_SIZE = 0x10;
-	private const uint8 ABI_MAJOR = 1;
-	private const uint8 ABI_MINOR = 1;
-	private const uint8 ABI_FULL = (ABI_MAJOR << 4) | ABI_MINOR;
 	private const uint32 RESPONSE_SIZE = 0x10;
 	private const uint DEFAULT_TIMEOUT = 5000;
 	private const uint32 STATUS_SUCCESS = 0x0;
@@ -205,10 +207,22 @@ namespace NXDumpClient {
 			status = CONNECTED;
 		}
 
+		private static GenericSet<uint8> supported_abis = new GenericSet<uint8>(null, null);
+
+		private static uint8 make_abi_version(uint8 major, uint8 minor)
+		requires (major < 16 && minor < 16) {
+			return major << 4 | minor;
+		}
+
+		static construct {
+			supported_abis.add(make_abi_version(1, 1));
+		}
+
 		private GUsb.Interface iface = null;
 		private GUsb.Endpoint endpoint_input = null;
 		private GUsb.Endpoint endpoint_output = null;
 		private NspDumpStatus? nsp_dump_status = null;
+		private ClientFeatures features = NONE;
 
 		public UsbDeviceClient(owned UsbDeviceOpener devopener_, Cancellable? cancellable_ = null) throws Error {
 			Object(devopener: (owned)devopener_, cancellable: cancellable_);
@@ -333,8 +347,14 @@ namespace NXDumpClient {
 			var ver_micro = istream.read_byte(cancellable);
 
 			var abi_ver = istream.read_byte(cancellable);
-			if (abi_ver != ABI_FULL) {
-				throw new UsbDeviceProtocolError.UNSUPPORTED_ABI_VERSION("Unsupported USB ABI version x0%X", abi_ver);
+			if (!(abi_ver in supported_abis)) {
+				throw new UsbDeviceProtocolError.UNSUPPORTED_ABI_VERSION("Unsupported USB ABI version %s", format_usb_abi(abi_ver));
+			}
+
+			{
+				features = NONE;
+
+				// Put feature selection code here
 			}
 
 			var git_hash = (string)istream.read_bytes(8, cancellable).get_data();
@@ -543,7 +563,6 @@ namespace NXDumpClient {
 				debug("File transfer finished");
 			} catch(Error e) {
 				transfer_failed.emit(file, false);
-				// Use error_to_recoverable once error handling during transfer is used
 				throw e;
 			}
 

@@ -128,11 +128,11 @@ namespace NXDumpClient {
 
 			if (device.transfer_total_bytes >= MIN_TRANSFER_SPEED_SIZE) {
 				var time_passed = get_monotonic_time() - device.transfer_started_time;
+				// Time is measured after the first transfer, so skip it
 				var current_bytes_adjusted = device.transfer_current_bytes - BLOCK_SIZE;
 				builder.append_c(' ');
 				if (current_bytes_adjusted > 0 && time_passed > 0) {
-					// Time is measured after the first transfer, so skip it
-					var bytes_remaining = device.transfer_total_bytes - current_bytes_adjusted;
+					var bytes_remaining = device.transfer_total_bytes - device.transfer_current_bytes;
 					var time_remaining = time_passed * bytes_remaining / current_bytes_adjusted / 1000000;
 					var bytes_per_second = current_bytes_adjusted * 1000000 / time_passed;
 					builder.append_printf(C_("file transfer speed and min:sec remaining", "(%s/s, %02lld:%02lld remaining)"),

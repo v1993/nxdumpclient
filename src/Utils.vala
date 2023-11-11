@@ -52,6 +52,10 @@ namespace NXDumpClient {
 		}
 	}
 
+	string format_usb_abi(uint8 abi) {
+		return @"%hhu.%hhu".printf(abi >> 4, abi & 0xF);
+	}
+
 	namespace FileSettingUtils {
 		[CCode (has_target = false)]
 		delegate string DefaultPathFunc();
