@@ -20,15 +20,13 @@
 
 internal string argv0;
 
-extern const string GETTEXT_PACKAGE;
-
 int main(string[] args) {
 	argv0 = args[0] ?? "nxdumpclient";
 
 	Intl.setlocale();
-	Intl.bindtextdomain(GETTEXT_PACKAGE, BuildConfig.LOCALE_DIR);
-	Intl.bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-	Intl.textdomain(GETTEXT_PACKAGE);
+	Intl.bindtextdomain(BuildCArgs.GETTEXT_PACKAGE, BuildConfig.LOCALE_DIR);
+	Intl.bind_textdomain_codeset(BuildCArgs.GETTEXT_PACKAGE, "UTF-8");
+	Intl.textdomain(BuildCArgs.GETTEXT_PACKAGE);
 
 	var app = new NXDumpClient.Application();
 	return app.run(args);
