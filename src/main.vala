@@ -19,9 +19,17 @@
  */
 
 internal string argv0;
+extern const string GETTEXT_PACKAGE;
+extern const string NXDC_LOCALE_DIR;
 
 int main(string[] args) {
 	argv0 = args[0] ?? "nxdumpclient";
+
+	Intl.setlocale();
+	Intl.bindtextdomain(GETTEXT_PACKAGE, NXDC_LOCALE_DIR);
+	Intl.bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	Intl.textdomain(GETTEXT_PACKAGE);
+
 	var app = new NXDumpClient.Application();
 	return app.run(args);
 }
