@@ -18,8 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-extern const string NXDC_EXECUTABLE;
-
 // Debug option to use libportal even out of sandbox.
 // This is theoretically safe to have always, but may hit bugs in portal backends.
 private const bool FORCE_LIBPORTAL = false;
@@ -186,7 +184,7 @@ namespace NXDumpClient {
 				}
 
 				var autostart_cmd = new GenericArray<unowned string>(2);
-				autostart_cmd.add(NXDC_EXECUTABLE);
+				autostart_cmd.add(BuildConfig.EXECUTABLE);
 				autostart_cmd.add("--background");
 				// D-Bus activation is not an option because of having to pass a flag
 				var flags = need_autostart ? Xdp.BackgroundFlags.AUTOSTART : Xdp.BackgroundFlags.NONE;

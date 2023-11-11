@@ -18,9 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-extern const string NXDC_VERSION;
-extern const string NXDC_ICONS_PATH;
-
 namespace NXDumpClient {
 	/// A convenience method to show errors to user
 	internal void report_error(string desc, string message) {
@@ -255,7 +252,7 @@ namespace NXDumpClient {
 
 		public override int handle_local_options(VariantDict opt) {
 			if (opt.lookup("version", "b", null)) {
-				print("nxdumpclient %s\n", NXDC_VERSION);
+				print("nxdumpclient %s\n", BuildConfig.VERSION);
 				return 0;
 			}
 
@@ -316,8 +313,8 @@ namespace NXDumpClient {
 
 			if (Xdp.Portal.running_under_flatpak()) {
 				// Fix About dialog icon
-				debug("Adding to icons path: %s", NXDC_ICONS_PATH);
-				Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(NXDC_ICONS_PATH);
+				debug("Adding to icons path: %s", BuildConfig.ICONS_PATH);
+				Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(BuildConfig.ICONS_PATH);
 			}
 			#endif
 		}
@@ -413,7 +410,7 @@ namespace NXDumpClient {
 		}
 
 		private void on_about_action() {
-			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", NXDC_VERSION) {
+			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", BuildConfig.VERSION) {
 				transient_for = main_window,
 				translator_credits = _("translator-credits"),
 				developers = {

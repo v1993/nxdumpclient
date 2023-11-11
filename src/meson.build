@@ -2,6 +2,7 @@ nxdc_sources = []
 
 nxdc_sources_native = [
   'main.vala',
+  'config.vapi',
 
   'Application.vala',
   'Window.vala',
@@ -103,6 +104,16 @@ else
   message('Current meson version has a bug; pass -Denforce_build_order=true in case this is not a development build')
 endif
 
+conf_data = configuration_data()
+conf_data.set_quoted('NXDC_VERSION',    meson.project_version())
+conf_data.set_quoted('NXDC_LOCALE_DIR', get_option('prefix') / get_option('localedir'))
+conf_data.set_quoted('NXDC_ICONS_PATH', get_option('prefix') / get_option('datadir') / 'icons')
+conf_data.set_quoted('NXDC_EXECUTABLE', get_option('prefix') / get_option('bindir') / 'nxdumpclient')
+configure_file(
+  output: 'config.h',
+  configuration: conf_data
+)
+
 executable('nxdumpclient', nxdc_sources,
   extra_files: nxdc_sources_native,
   dependencies: nxdc_deps,
@@ -110,12 +121,8 @@ executable('nxdumpclient', nxdc_sources,
   install: true,
 
   c_args: [
+    # These must be defined before GLib includes
     '-DGETTEXT_PACKAGE="nxdumpclient"',
     '-DG_LOG_DOMAIN="nxdumpclient"',
-    '-DNXDC_VERSION="@0@"'.format(meson.project_version()),
-    '-DNXDC_LOCALE_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
-    '-DNXDC_ICONS_PATH="@0@"'.format(get_option('prefix') / get_option('datadir') / 'icons'),
-    '-DNXDC_EXECUTABLE="@0@"'.format(get_option('prefix') / get_option('bindir') / 'nxdumpclient'),
   ],
 )
-
