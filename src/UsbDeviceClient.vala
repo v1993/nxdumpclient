@@ -35,7 +35,9 @@ namespace NXDumpClient {
 		SEND_FILE_PROPERTIES,
 		CANCEL_FILE_TRANSFER,
 		SEND_NSP_HEADER,
-		END_SESSION
+		END_SESSION,
+		START_EXTRACTED_FS_DUMP,
+		END_EXTRACTED_FS_DUMP,
 	}
 
 	// Error codes directly map to responses
@@ -57,6 +59,10 @@ namespace NXDumpClient {
 		GenericArray<string>? nca_checksums; // Prefixes for NCA files
 	}
 
+	/**
+	 * This is intended for breaking changes or new fields in existing commands.
+	 * New commands/possible invocations of commands are added without version checks.
+	 */
 	[Flags]
 	private enum ClientFeatures {
 		NONE = 0,
@@ -216,6 +222,7 @@ namespace NXDumpClient {
 
 		static construct {
 			supported_abis.add(make_abi_version(1, 1));
+			supported_abis.add(make_abi_version(1, 2));
 		}
 
 		private GUsb.Interface iface = null;
@@ -303,8 +310,18 @@ namespace NXDumpClient {
 							case UsbCommands.SEND_FILE_PROPERTIES:
 								yield file_transfer(command_block_buf);
 								break;
+							case UsbCommands.CANCEL_FILE_TRANSFER:
+								yield standalone_cancel(command_block_buf);
+								break;
 							case UsbCommands.SEND_NSP_HEADER:
 								yield nsp_header(command_block_buf);
+								break;
+
+							case UsbCommands.START_EXTRACTED_FS_DUMP:
+								yield start_extracted_fs_dump(command_block_buf);
+								break;
+							case UsbCommands.END_EXTRACTED_FS_DUMP:
+								yield end_extracted_fs_dump(command_block_buf);
 								break;
 							default:
 								throw new UsbDeviceProtocolError.UNSUPPORTED_COMMAND("Unsupported command 0x%X", command_id);
@@ -609,6 +626,21 @@ namespace NXDumpClient {
 			}
 		}
 
+		private async void standalone_cancel(uint8[] header) throws Error {
+			if (nsp_dump_status == null) {
+				throw new UsbDeviceProtocolError.MALFORMED_COMMAND("Cancellation command without an ongoing transfer");
+			}
+
+			try {
+				yield nsp_dump_status.ostream.close_async(Priority.DEFAULT, cancellable);
+				yield send_status_success();
+			} catch(Error e) {
+				throw error_to_recoverable(e);
+			} finally {
+				transfer_failed.emit(nsp_dump_status.file, true);
+			}
+		}
+
 		private async void nsp_header(uint8[] header) throws Error {
 			try {
 				if (nsp_dump_status == null) {
@@ -646,6 +678,16 @@ namespace NXDumpClient {
 				transfer_failed.emit(nsp_dump_status.file, false);
 				throw error_to_recoverable(e);
 			}
+		}
+
+		private async void start_extracted_fs_dump(uint8[] header) throws Error {
+			debug("start_extracted_fs_dump called");
+			yield send_status_success();
+		}
+
+		private async void end_extracted_fs_dump(uint8[] header) throws Error {
+			debug("end_extracted_fs_dump called");
+			yield send_status_success();
 		}
 
 		private void verify_nsp_checksums(uint8[] header, GenericArray<string> checksums) throws Error {
