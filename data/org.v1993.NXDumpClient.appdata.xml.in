@@ -21,6 +21,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.1.2" date="2023-11-12" type="stable">
+      <description>
+        <p>Release highlights:</p>
+        <ul>
+          <li>Add initial support for USB ABI 1.2</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.1" date="2023-11-07" type="stable">
       <description>
         <p>Release highlights:</p>
