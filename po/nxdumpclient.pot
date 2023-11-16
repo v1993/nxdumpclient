@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-12 03:44+0300\n"
+"POT-Creation-Date: 2023-11-13 12:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,10 @@ msgstr ""
 msgid "Dump over USB with nxdumptool"
 msgstr ""
 
+#: data/org.v1993.NXDumpClient.desktop.in.in:10
+msgid "nxdumpclient;nxdumptool;"
+msgstr ""
+
 #: data/org.v1993.NXDumpClient.autostart.desktop.in.in:3
 msgid "NX Dump Client (background launch)"
 msgstr ""
@@ -43,51 +47,51 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:19
+#: data/org.v1993.NXDumpClient.appdata.xml.in:23
 msgid "NX Dump Tool receiving a file"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:26
-#: data/org.v1993.NXDumpClient.appdata.xml.in:34
-#: data/org.v1993.NXDumpClient.appdata.xml.in:42
-#: data/org.v1993.NXDumpClient.appdata.xml.in:59
+#: data/org.v1993.NXDumpClient.appdata.xml.in:30
+#: data/org.v1993.NXDumpClient.appdata.xml.in:38
+#: data/org.v1993.NXDumpClient.appdata.xml.in:46
+#: data/org.v1993.NXDumpClient.appdata.xml.in:63
 msgid "Release highlights:"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:28
+#: data/org.v1993.NXDumpClient.appdata.xml.in:32
 msgid "Add initial support for USB ABI 1.2"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:36
+#: data/org.v1993.NXDumpClient.appdata.xml.in:40
 msgid "Add basic speed and remaining time estimation"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:44
+#: data/org.v1993.NXDumpClient.appdata.xml.in:48
 msgid ""
 "Improve checksum verification - support non-standard dump options by default"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:50
+#: data/org.v1993.NXDumpClient.appdata.xml.in:54
 msgid "Fixes:"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:52
+#: data/org.v1993.NXDumpClient.appdata.xml.in:56
 msgid "Fix StartupNotify functionality under flatpak"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:58
+#: data/org.v1993.NXDumpClient.appdata.xml.in:62
 msgid "First stable release."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:61
+#: data/org.v1993.NXDumpClient.appdata.xml.in:65
 msgid "Support for running in background and autostart"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:62
+#: data/org.v1993.NXDumpClient.appdata.xml.in:66
 msgid "Confirm exit if file transfer is in progress"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:68
+#: data/org.v1993.NXDumpClient.appdata.xml.in:72
 msgid "Initial release."
 msgstr ""
 

@@ -14,6 +14,10 @@
 	<description>
 	  <p>Client for dumping over USB with nxdumptool.</p>
 	</description>
+  <keywords>
+    <keyword>nxdumpclient</keyword>
+    <keyword>nxdumptool</keyword>
+  </keywords>
   <screenshots>
     <screenshot type="default">
       <caption>NX Dump Tool receiving a file</caption>

@@ -6,6 +6,7 @@ Icon=org.v1993.NXDumpClient
 Terminal=false
 Type=Application
 Categories=GTK;Utility;
+Keywords=nxdumpclient;nxdumptool;
 StartupNotify=true
 StartupWMClass=nxdumpclient
 DBusActivatable=true
