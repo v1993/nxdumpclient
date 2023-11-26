@@ -127,4 +127,5 @@ executable('nxdumpclient', nxdc_sources,
     '-DGETTEXT_PACKAGE="nxdumpclient"',
     '-DG_LOG_DOMAIN="nxdumpclient"',
   ],
+  win_subsystem: 'windows',
 )
