@@ -95,11 +95,12 @@ namespace NXDumpClient {
 		}
 	}
 
-	// I've discussed this on nxdumptool discord; newer ABI should include
+	// TODO: utilize new ABI commands instead of guessing from prefixes
 	private bool is_mass_transfer_path(string path) {
 		const string[] PATHS = {
 			"/NCA FS/User/Extracted",
 			"/NCA FS/System/Extracted",
+			"/atmosphere/contents",
 		};
 
 		foreach(unowned var prefix in PATHS) {
@@ -130,7 +131,8 @@ namespace NXDumpClient {
 				"/NCA/User",
 				"/NCA/System",
 				"/HFS/Extracted",
-				"/HFS/Raw"
+				"/HFS/Raw",
+				"/atmosphere/contents",
 			};
 
 			bool preserve_path = false;
