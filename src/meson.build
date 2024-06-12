@@ -77,7 +77,7 @@ nxdc_sources += gnome.compile_resources('nxdumpclient-resources',
   source_dir: [ nxdc_blueprints_build_dir, '..' / 'data' ]
 )
 
-has_gresource_fixes = false # meson.project_version() => '1.3.0' or whenever https://github.com/mesonbuild/meson/pull/12418 lands
+has_gresource_fixes = meson.project_version() >= '1.4.0' # https://github.com/mesonbuild/meson/pull/12418
 
 if not has_gresource_fixes
   extra_vala_args += [ '--gresourcesdir', nxdc_blueprints_build_dir ]
