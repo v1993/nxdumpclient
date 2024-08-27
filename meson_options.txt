@@ -15,10 +15,3 @@ option(
                '[prompt] Instruct user how to manually install udevs rule at first launch; suitable for non-system installations\n' +
                '[ignore] Do not worry about udev rules\n'
 )
-
-option(
-  'enforce_build_order',
-  type: 'boolean',
-  value: false,
-  description: 'Mitigate https://github.com/mesonbuild/meson/issues/12417 in affected meson versions at cost of degraded IDE support'
-)

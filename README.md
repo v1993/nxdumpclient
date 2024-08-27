@@ -21,7 +21,7 @@ Not much to say, really - it just works! You can enable autostart in settings an
 
 Short version: AUR (stable) package if you're on Arch-based distro, flatpak from Flathub otherwise. Installing flatpaks from CI is normally heavily discouraged since those won't be automatically updated - please install from Flathub if possible instead.
 
-Long version: Manual building or using unofficial packages may be viable options in non-Arch environments, but Manjaro/GNOME's Flatpak SDK (whichever is less up-to-date at the moment) is what ultimately determines what is the highest library version features from which I'll consider using. While I'm willing to support more distros natively, I won't be going out of my way to do so (a few tweaks to build system are fine, having to manually implement a feature present in newer version of a library/tool is not).
+Long version: Manual building or using unofficial packages may be viable options in non-Arch environments, but Arch's/GNOME Flatpak SDK's (whichever is less up-to-date at the moment) is what ultimately determines what is the highest library version features from which I'll consider using. While I'm willing to support more distros natively, I won't be going out of my way to do so (a few tweaks to build system are fine, having to manually implement a feature present in newer version of a library/tool is not).
 
 ### Where are the dumps stored?
 
@@ -47,17 +47,17 @@ Installing special udev rules is required for user access to device. You should 
 
 Because of how udev events are communicated on Linux. You can manually revoke it if you so desire, but that will break support for device hotplug - i.e. you'll have to always connect your switch before starting the program.
 
-## Building
+## Building manually
+
+Please note that a fairly recent distro is required - see dependencies section below.
 
 ```bash
 git clone https://github.com/v1993/nxdumpclient.git
 cd nxdumpclient
-meson setup --buildtype=debugoptimized -Db_lto=true -Denforce_build_order=true --prefix=/usr build
+meson setup --buildtype=debugoptimized -Db_lto=true --prefix=/usr build
 meson compile -C build
 meson install -C build
 ```
-
-Please note that a fairly recent distro is required - see dependencies section below.
 
 An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml` (please note that building with flatpak requires initializing git submodules; they are not used otherwise). Use of `flatpak-builder` is out-of-scope for this document - download pre-built package from Flathub if you just want to use the flatpak version.
 

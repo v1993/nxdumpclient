@@ -77,16 +77,19 @@ nxdc_sources += gnome.compile_resources('nxdumpclient-resources',
   source_dir: [ nxdc_blueprints_build_dir, '..' / 'data' ]
 )
 
-has_gresource_fixes = meson.project_version() >= '1.4.0' # https://github.com/mesonbuild/meson/pull/12418
+if meson.version() >= '1.4.0'
+  nxdc_sources += nxdc_sources_native
+else
+  # TODO: remove the workaround and bump minimum Meson version when gnome's flatpak
+  # runtime updates; runtime 46 is at Meson 1.3.2
+  warning(
+    'Using workarounds for building with Meson < 1.4.0; this will confuse your IDE.',
+    'This is only a problem for developers; users can disregard this warning.',
+    'See https://github.com/mesonbuild/meson/pull/12418 for details.'
+  )
 
-if not has_gresource_fixes
   extra_vala_args += [ '--gresourcesdir', nxdc_blueprints_build_dir ]
-endif
 
-# This is ridiculous; we have to do this to avoid the situation where
-# Vala files are built prior to their corresponding .ui files
-
-if get_option('enforce_build_order') and not has_gresource_fixes
   fs = import('fs')
   foreach file: nxdc_sources_native
     nxdc_sources += custom_target(
@@ -98,10 +101,6 @@ if get_option('enforce_build_order') and not has_gresource_fixes
       depends: nxdc_blueprint_tgt
     )
   endforeach
-  message('Enforcing build order, IDE syntax highlighting will break')
-else
-  nxdc_sources += nxdc_sources_native
-  message('Current meson version has a bug; pass -Denforce_build_order=true in case this is not a development build')
 endif
 
 conf_data = configuration_data()
