@@ -21,7 +21,7 @@
 #if PROMPT_FOR_UDEV_RULES
 namespace NXDumpClient {
 	[GtkTemplate (ui = "/org/v1993/NXDumpClient/UdevRulesDialog.ui")]
-	public class UdevRulesDialog: Adw.Window {
+	public class UdevRulesDialog: Adw.Dialog {
 		protected string command_line_for_installation {
 			owned get {
 				var cmd = argv0;

@@ -99,7 +99,7 @@ namespace NXDumpClient {
 		}
 
 		public async bool query_app_exit() {
-			var dialog = new Adw.MessageDialog(main_window, _("Confirm exit"), _("A file transfer is currently in progress.\nAre you sure you want to quit?")) {
+			var dialog = new Adw.AlertDialog(_("Confirm exit"), _("A file transfer is currently in progress.\nAre you sure you want to quit?")) {
 				close_response = "cancel",
 				default_response = "confirm",
 
@@ -107,7 +107,7 @@ namespace NXDumpClient {
 			dialog.add_response("cancel", C_("deny app exit", "Cancel"));
 			dialog.add_response("confirm", C_("confirm app exit", "Confirm exit"));
 			dialog.set_response_appearance("confirm", DESTRUCTIVE);
-			var res = yield dialog.choose(cancellable);
+			var res = yield dialog.choose(main_window, cancellable);
 			return res == "confirm";
 		}
 
@@ -393,10 +393,8 @@ namespace NXDumpClient {
 			main_window.present();
  			#if PROMPT_FOR_UDEV_RULES
  			if (!prompted_for_udev_rules) {
-				var udev_dialog = new UdevRulesDialog() {
-					transient_for = main_window
-				};
-				udev_dialog.present();
+				var udev_dialog = new UdevRulesDialog();
+				udev_dialog.present(main_window);
 			}
  			#endif
 		}
@@ -410,8 +408,7 @@ namespace NXDumpClient {
 		}
 
 		private void on_about_action() {
-			var about = new Adw.AboutWindow.from_appdata("/org/v1993/NXDumpClient/appdata.xml", BuildConfig.VERSION) {
-				transient_for = main_window,
+			var about = new Adw.AboutDialog.from_appdata("/org/v1993/NXDumpClient/appdata.xml", BuildConfig.VERSION) {
 				translator_credits = _("translator-credits"),
 				developers = {
 					"v19930312"
@@ -427,15 +424,13 @@ namespace NXDumpClient {
 				}
  			);
 
-			about.present();
+			about.present(main_window);
 		}
 
 		private void on_preferences_action() {
-			var preferences = new PreferencesWindow() {
-				transient_for = main_window
-			};
+			var preferences = new PreferencesDialog();
 
-			preferences.present();
+			preferences.present(main_window);
 		}
 
 		private void on_show_file_action(SimpleAction action, Variant? param)
