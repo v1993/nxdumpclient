@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
   <name>NX Dump Client</name>
-	<id>org.v1993.NXDumpClient</id>
+    <id>org.v1993.NXDumpClient</id>
   <developer_name>v19930312</developer_name>
-  <summary>Client for dumping over USB with nxdumptool</summary>
-	<metadata_license>CC0-1.0</metadata_license>
-	<project_license>GPL-3.0-or-later</project_license>
+  <summary>Dump Switch games over USB</summary>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0-or-later</project_license>
   <translation type="gettext">nxdumpclient</translation>
   <content_rating type="oars-1.1" />
   <launchable type="desktop-id">org.v1993.NXDumpClient.desktop</launchable>
   <url type="homepage">https://github.com/v1993/nxdumpclient</url>
   <url type="bugtracker">https://github.com/v1993/nxdumpclient/issues</url>
-	<description>
-	  <p>Client for dumping over USB with nxdumptool.</p>
-	</description>
+  <description>
+    <p>This application acts as a companion to nxdumptool, allowing you to dump Nintendo Switch games directly over USB.</p>
+  </description>
   <keywords>
     <keyword>nxdumpclient</keyword>
     <keyword>nxdumptool</keyword>
