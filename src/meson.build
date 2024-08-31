@@ -91,11 +91,12 @@ else
   extra_vala_args += [ '--gresourcesdir', nxdc_blueprints_build_dir ]
 
   fs = import('fs')
+  cat = find_program('cat')
   foreach file: nxdc_sources_native
     nxdc_sources += custom_target(
       input: file,
       output:  'copied_'+fs.name(file),
-      command: [find_program('cat')],
+      command: [cat],
       feed: true,
       capture: true,
       depends: nxdc_blueprint_tgt
