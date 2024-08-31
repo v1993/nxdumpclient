@@ -4,21 +4,21 @@ data/org.v1993.NXDumpClient.appdata.xml.in
 data/org.v1993.NXDumpClient.gschema.xml
 
 # Generate with
-# find src/ -type f \( -name '*.vala' -or -name '*.blp' \)
+# find src/ -type f \( -name '*.vala' -or -name '*.blp' \) | sort
+src/Application.vala
 src/gtk/help-overlay.blp
-src/widgets/FileRow.vala
+src/main.vala
+src/PreferencesDialog.blp
+src/PreferencesDialog.vala
+src/UdevRulesDialog.blp
+src/UdevRulesDialog.vala
+src/UsbContext.vala
+src/UsbDeviceClient.vala
+src/UsbDeviceOpener.vala
+src/Utils.vala
 src/widgets/DeviceStatusRow.blp
 src/widgets/DeviceStatusRow.vala
 src/widgets/FileRow.blp
-src/UsbDeviceOpener.vala
+src/widgets/FileRow.vala
 src/Window.blp
-src/Utils.vala
-src/main.vala
-src/UdevRulesDialog.blp
-src/UdevRulesDialog.vala
 src/Window.vala
-src/UsbContext.vala
-src/UsbDeviceClient.vala
-src/Application.vala
-src/PreferencesWindow.blp
-src/PreferencesWindow.vala
