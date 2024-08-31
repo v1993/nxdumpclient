@@ -1,4 +1,4 @@
-/* PreferencesWindow.vala
+/* PreferencesDialog.vala
  *
  * Copyright 2023 v1993 <v19930312@gmail.com>
  *
@@ -19,7 +19,7 @@
  */
 
 // Debug option to use libportal even out of sandbox.
-// This is theoretically safe to have always, but may hit bugs in portal backends.
+// This is theoretically safe to have always on, but may hit bugs in portal backends.
 private const bool FORCE_LIBPORTAL = false;
 
 public enum NcaChecksumMode {
@@ -29,8 +29,8 @@ public enum NcaChecksumMode {
 }
 
 namespace NXDumpClient {
-	[GtkTemplate (ui = "/org/v1993/NXDumpClient/PreferencesWindow.ui")]
-	class PreferencesWindow: Adw.PreferencesWindow {
+	[GtkTemplate (ui = "/org/v1993/NXDumpClient/PreferencesDialog.ui")]
+	class PreferencesDialog: Adw.PreferencesDialog {
 		[GtkChild]
 		private unowned FileRow destination_directory;
 		[GtkChild]
@@ -75,7 +75,7 @@ namespace NXDumpClient {
 			var app = new Application();
 			cancellable = new Cancellable();
 			app.cancellable.connect(cancellable.cancel);
-			// Cancel all pending operations once this window is closed to avoid references sticking around
+			// Cancel all pending operations once this dialog is closed to avoid references sticking around
 			((Gtk.Widget)this).unrealize.connect(this.on_unrealized);
 
 			notify["allow-background"].connect(this.background_changed);
@@ -154,6 +154,17 @@ namespace NXDumpClient {
 		}
 
 		#if WITH_LIBPORTAL
+		private Xdp.Parent? make_xdp_parent() {
+			var? toplevel = get_root() as Gtk.Window;
+			if (toplevel == null) {
+				// This is unexpected, but not critical
+				warning("Failed to find root window for preferences dialog");
+				return null;
+			}
+
+			return Xdp.parent_new_gtk(toplevel);
+		}
+
 		private async void request_background() {
 			/*
 			 * The following cases require us to make a request:
@@ -190,7 +201,7 @@ namespace NXDumpClient {
 				var flags = need_autostart ? Xdp.BackgroundFlags.AUTOSTART : Xdp.BackgroundFlags.NONE;
 				debug("Requesting background, autostart: %s", need_autostart.to_string());
 				authorized = yield portal.request_background(
-					Xdp.parent_new_gtk(this),
+					make_xdp_parent(),
 					C_("reason for background activity", "Dumping applications without interaction"),
 					autostart_cmd,
 					flags,

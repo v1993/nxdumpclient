@@ -75,8 +75,8 @@ Note for those using `flatpak-builder`: you'll want to update git submodules as 
 
 ### Dependencies
 
-* GTK >= 4.10
-* libadwaita >= 1.4
+* GTK >= 4.13
+* libadwaita >= 1.5
 * GLib >= 2.76
 * GUsb (reasonably new)
 * libportal (optional for non-sandbox builds)

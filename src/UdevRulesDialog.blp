@@ -1,11 +1,10 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $NXDumpClientUdevRulesDialog: Adw.Window {
+template $NXDumpClientUdevRulesDialog: Adw.Dialog {
 	title: _("Udev rules installation");
-	modal: true;
 
-	content: Adw.ToolbarView {
+	child: Adw.ToolbarView {
 		[top]
 		Adw.HeaderBar {
 		}
@@ -14,21 +13,24 @@ template $NXDumpClientUdevRulesDialog: Adw.Window {
 			margin-start: 5;
 			margin-end: 5;
 			margin-bottom: 5;
+			spacing: 20;
 			orientation: vertical;
 
-			spacing: 20;
 			Label {
 				styles [ "title-4" ]
 				halign: center;
 				justify: center;
-				label: _("Udev rules must be installed for this program to work.\nPlease exectute the following command to do so:");
+				wrap: true;
+				label: _("Udev rules must be installed for this program to work. Please exectute the following command to do so:");
 			}
 
-			Label {
-				halign: center;
-				justify: center;
-				selectable: true;
-				label: bind template.command_line_for_installation;
+			Gtk.ScrolledWindow {
+				child: Label {
+					halign: center;
+					justify: center;
+					selectable: true;
+					label: bind template.command_line_for_installation;
+				};
 			}
 
 			CheckButton checkbox {

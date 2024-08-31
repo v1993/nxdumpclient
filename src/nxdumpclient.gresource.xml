@@ -2,7 +2,7 @@
 <gresources>
   <gresource prefix="/org/v1993/NXDumpClient">
     <file preprocess="xml-stripblanks">Window.ui</file>
-    <file preprocess="xml-stripblanks">PreferencesWindow.ui</file>
+    <file preprocess="xml-stripblanks">PreferencesDialog.ui</file>
     <file preprocess="xml-stripblanks">UdevRulesDialog.ui</file>
 
     <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
