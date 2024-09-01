@@ -20,7 +20,7 @@
   </keywords>
   <screenshots>
     <screenshot type="default">
-      <caption>NX Dump Tool receiving a file</caption>
+      <caption>Receiving an NSP file</caption>
       <image type="source">https://raw.githubusercontent.com/v1993/nxdumpclient/main/data/screenshot-1.png</image>
     </screenshot>
   </screenshots>
