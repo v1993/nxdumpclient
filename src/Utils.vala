@@ -33,14 +33,13 @@ namespace NXDumpClient {
 		while(current_target != null) {
 			try {
 				yield current_target.make_directory_async(Priority.DEFAULT, cancellable);
+				break;
+			} catch(IOError.EXISTS e) {
+				break;
 			} catch(IOError.NOT_FOUND e) {
 				to_create += current_target;
 				current_target = current_target.get_parent();
-				continue;
-			} catch(IOError.EXISTS e) {
-				break;
 			}
-			break;
 		}
 
 		for (int i = to_create.length - 1; i >= 0; --i) {
