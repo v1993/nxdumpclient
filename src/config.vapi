@@ -11,6 +11,5 @@ namespace BuildCArgs {
 namespace BuildConfig {
 	public const string VERSION;
 	public const string LOCALE_DIR;
-	public const string ICONS_PATH;
 	public const string EXECUTABLE;
 }

@@ -310,12 +310,6 @@ namespace NXDumpClient {
 			} catch(Error e) {
 				warning("Failed to initialize libportal: %s", e.message);
 			}
-
-			if (Xdp.Portal.running_under_flatpak()) {
-				// Fix About dialog icon
-				debug("Adding to icons path: %s", BuildConfig.ICONS_PATH);
-				Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(BuildConfig.ICONS_PATH);
-			}
 			#endif
 		}
 

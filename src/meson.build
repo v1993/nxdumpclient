@@ -79,7 +79,6 @@ conf_data = configuration_data()
 
 conf_data.set_quoted('NXDC_VERSION',    meson.project_version())
 conf_data.set_quoted('NXDC_LOCALE_DIR', get_option('prefix') / get_option('localedir'))
-conf_data.set_quoted('NXDC_ICONS_PATH', get_option('prefix') / get_option('datadir') / 'icons')
 conf_data.set_quoted('NXDC_EXECUTABLE', get_option('prefix') / get_option('bindir') / 'nxdumpclient')
 
 configure_file(
