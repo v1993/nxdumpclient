@@ -1,6 +1,7 @@
 app-id: org.v1993.NXDumpClient
 runtime: org.gnome.Platform
-runtime-version: '46'
+# Remember to update CI image as well
+runtime-version: '47'
 sdk: org.gnome.Sdk
 command: nxdumpclient
 finish-args:
