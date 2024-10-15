@@ -1,6 +1,4 @@
-nxdc_sources = []
-
-nxdc_sources_native = [
+nxdc_sources = [
   'main.vala',
   'config.vapi',
 
@@ -77,33 +75,6 @@ nxdc_sources += gnome.compile_resources('nxdumpclient-resources',
   source_dir: [ nxdc_blueprints_build_dir, '..' / 'data' ]
 )
 
-if meson.version() >= '1.4.0'
-  nxdc_sources += nxdc_sources_native
-else
-  # TODO: remove the workaround and bump minimum Meson version when gnome's flatpak
-  # runtime updates; runtime 46 is at Meson 1.3.2
-  warning(
-    'Using workarounds for building with Meson < 1.4.0; this will confuse your IDE.',
-    'This is only a problem for developers; users can disregard this warning.',
-    'See https://github.com/mesonbuild/meson/pull/12418 for details.'
-  )
-
-  extra_vala_args += [ '--gresourcesdir', nxdc_blueprints_build_dir ]
-
-  fs = import('fs')
-  cat = find_program('cat')
-  foreach file: nxdc_sources_native
-    nxdc_sources += custom_target(
-      input: file,
-      output:  'copied_'+fs.name(file),
-      command: [cat],
-      feed: true,
-      capture: true,
-      depends: nxdc_blueprint_tgt
-    )
-  endforeach
-endif
-
 conf_data = configuration_data()
 
 conf_data.set_quoted('NXDC_VERSION',    meson.project_version())
@@ -117,7 +88,6 @@ configure_file(
 )
 
 executable('nxdumpclient', nxdc_sources,
-  extra_files: nxdc_sources_native,
   dependencies: nxdc_deps,
   vala_args: extra_vala_args,
   install: true,
