@@ -1,7 +1,7 @@
 app-id: org.v1993.NXDumpClient
 runtime: org.gnome.Platform
 # Remember to update CI image as well
-runtime-version: '47'
+runtime-version: '48'
 sdk: org.gnome.Sdk
 command: nxdumpclient
 finish-args:
@@ -15,6 +15,13 @@ finish-args:
   # Default dump destination
   - --filesystem=xdg-download
 
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /lib/girepository-1.0
+  - /share/gir-1.0
+  - /share/vala
+
 modules:
   - shared-modules/libusb/libusb.json
 
@@ -25,8 +32,8 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/jwestman/blueprint-compiler.git
-        tag: v0.14.0
-        commit: 8e10fcf8692108b9d4ab78f41086c5d7773ef864
+        tag: v0.18.0
+        commit: 07c9c9df9cd1b6b4454ecba21ee58211e9144a4b
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
@@ -39,19 +46,6 @@ modules:
       - -Dtests=false
     cleanup:
       - /bin
-      - /include
-      - /lib/pkgconfig
-      - /lib/girepository-1.0
-      - /man
-      - /share/aclocal
-      - /share/doc
-      - /share/gir-1.0
-      - /share/gtk-doc
-      - /share/man
-      - /share/pkgconfig
-      - /share/vala
-      - '*.la'
-      - '*.a'
     sources:
       - type: archive
         url: https://github.com/hughsie/libgusb/releases/download/0.4.9/libgusb-0.4.9.tar.xz
@@ -70,20 +64,6 @@ modules:
       - -Dbackend-gtk4=enabled
       - -Ddocs=false
       - -Dtests=false
-    cleanup:
-      - /include
-      - /lib/pkgconfig
-      - /lib/girepository-1.0
-      - /man
-      - /share/aclocal
-      - /share/doc
-      - /share/gir-1.0
-      - /share/gtk-doc
-      - /share/man
-      - /share/pkgconfig
-      - /share/vala
-      - '*.la'
-      - '*.a'
     sources:
       - type: archive
         url: https://github.com/flatpak/libportal/releases/download/0.8.1/libportal-0.8.1.tar.xz
