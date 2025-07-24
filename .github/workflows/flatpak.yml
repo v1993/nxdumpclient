@@ -20,7 +20,8 @@ jobs:
           - aarch64
 
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-47
+      # Check for a new docker version too if you're updating this
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
       options: --privileged
 
     steps:
@@ -31,7 +32,12 @@ jobs:
       - name: Install deps
         if: ${{ matrix.arch != 'x86_64' }}
         run: |
-          dnf -y install docker
+          # No package manager available anymore, so grab the static binary.
+          # Yes, this sucks. Yes, this is what official docs recommend.
+          # `docker/setup-docker-action` would be really nice to use instead, but calls missing `sudo`.
+          curl https://download.docker.com/linux/static/stable/x86_64/docker-28.3.2.tgz --output ./docker.tgz
+          tar xzvf docker.tgz
+          mv docker/* /usr/bin
   
       - name: Set up QEMU
         if: ${{ matrix.arch != 'x86_64' }}
