@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Download .flatpakref from Flathub
-        uses: suisei-cn/actions-download-file@v1.4.0
+        uses: suisei-cn/actions-download-file@v1.6.1
         with:
           url: "https://dl.flathub.org/repo/appstream/org.v1993.NXDumpClient.flatpakref"
           target: release/

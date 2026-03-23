@@ -30,7 +30,8 @@ namespace NXDumpClient {
 		FAILED
 	}
 
-	private enum UsbCommands {
+	// Used in ABIs 1.1 to 1.3
+	private enum UsbCommands_ABI11 {
 		START_SESSION,
 		SEND_FILE_PROPERTIES,
 		CANCEL_FILE_TRANSFER,
@@ -38,6 +39,19 @@ namespace NXDumpClient {
 		END_SESSION,
 		START_EXTRACTED_FS_DUMP,
 		END_EXTRACTED_FS_DUMP,
+		START_BULK_NSP_DUMP,
+	}
+
+	// Used in ABIs 1.4 and later
+	private enum UsbCommands_ABI14 {
+		START_SESSION,
+		END_SESSION,
+		SEND_FILE_PROPERTIES,
+		SEND_NSP_HEADER,
+		CANCEL_FILE_TRANSFER,
+		START_EXTRACTED_FS_DUMP,
+		START_BULK_NSP_DUMP,
+		END_BULK_OPERATION,
 	}
 
 	// Error codes directly map to responses
@@ -57,15 +71,6 @@ namespace NXDumpClient {
 		FileOutputStream ostream;
 		FileTransferInhibitor inhibitor;
 		GenericArray<string>? nca_checksums; // Prefixes for NCA files
-	}
-
-	/**
-	 * This is intended for breaking changes or new fields in existing commands.
-	 * New commands/possible invocations of commands are added without version checks.
-	 */
-	[Flags]
-	private enum ClientFeatures {
-		NONE = 0,
 	}
 
 	private const string COMMAND_MAGIC = "NXDT";
@@ -225,13 +230,15 @@ namespace NXDumpClient {
 		static construct {
 			supported_abis.add(make_abi_version(1, 1));
 			supported_abis.add(make_abi_version(1, 2));
+			supported_abis.add(make_abi_version(1, 3));
+			supported_abis.add(make_abi_version(1, 4));
 		}
 
 		private GUsb.Interface iface = null;
 		private GUsb.Endpoint endpoint_input = null;
 		private GUsb.Endpoint endpoint_output = null;
 		private NspDumpStatus? nsp_dump_status = null;
-		private ClientFeatures features = NONE;
+		private uint8 abi_version = 0;
 
 		public UsbDeviceClient(owned UsbDeviceOpener devopener_, Cancellable? cancellable_ = null) throws Error {
 			Object(devopener: (owned)devopener_, cancellable: cancellable_);
@@ -301,32 +308,10 @@ namespace NXDumpClient {
 							}
 						}
 
-						switch(command_id) {
-							case UsbCommands.START_SESSION:
-								yield start_session(command_block_buf);
-								break;
-							case UsbCommands.END_SESSION:
-								yield end_session(command_block_buf);
-								break;
-
-							case UsbCommands.SEND_FILE_PROPERTIES:
-								yield file_transfer(command_block_buf);
-								break;
-							case UsbCommands.CANCEL_FILE_TRANSFER:
-								yield standalone_cancel(command_block_buf);
-								break;
-							case UsbCommands.SEND_NSP_HEADER:
-								yield nsp_header(command_block_buf);
-								break;
-
-							case UsbCommands.START_EXTRACTED_FS_DUMP:
-								yield start_extracted_fs_dump(command_block_buf);
-								break;
-							case UsbCommands.END_EXTRACTED_FS_DUMP:
-								yield end_extracted_fs_dump(command_block_buf);
-								break;
-							default:
-								throw new UsbDeviceProtocolError.UNSUPPORTED_COMMAND("Unsupported command 0x%X", command_id);
+						if (abi_version >= make_abi_version(1, 4)) {
+							yield dispatch_abi14(command_id, command_block_buf);
+						} else {
+							yield dispatch_abi11(command_id, command_block_buf);
 						}
 					} catch(UsbDeviceProtocolError e) {
 						// Explicitly designed to translate to status codes 1:1
@@ -353,6 +338,72 @@ namespace NXDumpClient {
 			debug("Normal exit from device loop");
 		}
 
+		private async void dispatch_abi14(uint32 command_id, uint8[] command_block_buf) throws Error {
+			switch(command_id) {
+				case UsbCommands_ABI14.START_SESSION:
+					yield start_session(command_block_buf);
+					break;
+				case UsbCommands_ABI14.END_SESSION:
+					yield end_session(command_block_buf);
+					break;
+
+				case UsbCommands_ABI14.SEND_FILE_PROPERTIES:
+					yield file_transfer(command_block_buf);
+					break;
+				case UsbCommands_ABI14.SEND_NSP_HEADER:
+					yield nsp_header(command_block_buf);
+					break;
+				case UsbCommands_ABI14.CANCEL_FILE_TRANSFER:
+					yield standalone_cancel(command_block_buf);
+					break;
+
+				case UsbCommands_ABI14.START_EXTRACTED_FS_DUMP:
+					yield start_extracted_fs_dump(command_block_buf);
+					break;
+				case UsbCommands_ABI14.START_BULK_NSP_DUMP:
+					yield start_bulk_nsp_dump(command_block_buf);
+					break;
+				case UsbCommands_ABI14.END_BULK_OPERATION:
+					yield end_bulk_operation(command_block_buf);
+					break;
+				default:
+					throw new UsbDeviceProtocolError.UNSUPPORTED_COMMAND("Unsupported command 0x%X", command_id);
+			}
+		}
+
+		private async void dispatch_abi11(uint32 command_id, uint8[] command_block_buf) throws Error {
+			switch(command_id) {
+				case UsbCommands_ABI11.START_SESSION:
+					yield start_session(command_block_buf);
+					break;
+				case UsbCommands_ABI11.END_SESSION:
+					yield end_session(command_block_buf);
+					break;
+
+				case UsbCommands_ABI11.SEND_FILE_PROPERTIES:
+					yield file_transfer(command_block_buf);
+					break;
+				case UsbCommands_ABI11.CANCEL_FILE_TRANSFER:
+					yield standalone_cancel(command_block_buf);
+					break;
+				case UsbCommands_ABI11.SEND_NSP_HEADER:
+					yield nsp_header(command_block_buf);
+					break;
+
+				case UsbCommands_ABI11.START_EXTRACTED_FS_DUMP:
+					yield start_extracted_fs_dump(command_block_buf);
+					break;
+				case UsbCommands_ABI11.END_EXTRACTED_FS_DUMP:
+					yield end_bulk_operation(command_block_buf);
+					break;
+				case UsbCommands_ABI11.START_BULK_NSP_DUMP:
+					yield start_bulk_nsp_dump(command_block_buf);
+					break;
+				default:
+					throw new UsbDeviceProtocolError.UNSUPPORTED_COMMAND("Unsupported command 0x%X", command_id);
+			}
+		}
+
 		private async void start_session(uint8[] command) throws Error {
 			debug("Starting session");
 			if (command.length != 0x10) {
@@ -365,15 +416,9 @@ namespace NXDumpClient {
 			var ver_minor = istream.read_byte(cancellable);
 			var ver_micro = istream.read_byte(cancellable);
 
-			var abi_ver = istream.read_byte(cancellable);
-			if (!(abi_ver in supported_abis)) {
-				throw new UsbDeviceProtocolError.UNSUPPORTED_ABI_VERSION("Unsupported USB ABI version %s", format_usb_abi(abi_ver));
-			}
-
-			{
-				features = NONE;
-
-				// Put feature selection code here
+			abi_version = istream.read_byte(cancellable);
+			if (!(abi_version in supported_abis)) {
+				throw new UsbDeviceProtocolError.UNSUPPORTED_ABI_VERSION("Unsupported USB ABI version %s", format_usb_abi(abi_version));
 			}
 
 			var git_hash = (string)istream.read_bytes(8, cancellable).get_data();
@@ -401,6 +446,14 @@ namespace NXDumpClient {
 			}
 
 			yield send_status_success();
+		}
+
+		private uint32 get_cancel_file_transfer_command() {
+			if (abi_version >= make_abi_version(1, 4)) {
+				return UsbCommands_ABI14.CANCEL_FILE_TRANSFER;
+			} else {
+				return UsbCommands_ABI11.CANCEL_FILE_TRANSFER;
+			}
 		}
 
 		private async void file_transfer(uint8[] command) throws Error {
@@ -550,7 +603,7 @@ namespace NXDumpClient {
 						// Check if it's a transfer canceling message
 						var header_istream = make_input_stream(incoming_data);
 						if (header_istream.read_bytes(COMMAND_MAGIC.length, cancellable).compare(new Bytes.static(COMMAND_MAGIC.data)) == 0 &&
-							header_istream.read_uint32(cancellable) == UsbCommands.CANCEL_FILE_TRANSFER
+							header_istream.read_uint32(cancellable) == get_cancel_file_transfer_command()
 						) {
 							// Transfer canceled
 							debug("Transfer canceled");
@@ -687,8 +740,14 @@ namespace NXDumpClient {
 			yield send_status_success();
 		}
 
-		private async void end_extracted_fs_dump(uint8[] header) throws Error {
-			debug("end_extracted_fs_dump called");
+		private async void start_bulk_nsp_dump(uint8[] header) throws Error {
+			debug("start_bulk_nsp_dump called");
+			yield send_status_success();
+		}
+
+		// Known as end_extracted_fs_dump in ABIs 1.2 to 1.3
+		private async void end_bulk_operation(uint8[] header) throws Error {
+			debug("end_bulk_operation called");
 			yield send_status_success();
 		}
 
