@@ -59,7 +59,7 @@ meson compile -C build
 meson install -C build
 ```
 
-An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml` (please note that building with flatpak requires initializing git submodules; they are not used otherwise). Use of `flatpak-builder` is out-of-scope for this document - download pre-built package from Flathub if you just want to use the flatpak version.
+An alternative to direct installation is to use flatpak manifest stored at `flatpak/org.v1993.NXDumpClient.yml`. Use of `flatpak-builder` is out-of-scope for this document - download pre-built package from Flathub if you just want to use the flatpak version.
 
 ### Updating
 
@@ -71,7 +71,7 @@ meson compile -C build
 meson install -C build
 ```
 
-Note for those using `flatpak-builder`: you'll want to update git submodules as well, but can skip updating meson subprojects.
+Note for those using `flatpak-builder`: you can skip updating meson subprojects.
 
 ### Dependencies
 
