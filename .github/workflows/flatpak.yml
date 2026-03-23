@@ -10,43 +10,27 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
+      options: --privileged
 
     strategy:
       fail-fast: false
       matrix:
-        arch:
-          - x86_64
-          - aarch64
+        variant:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
 
-    container:
-      # Check for a new docker version too if you're updating this
-      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
-      options: --privileged
+    runs-on: ${{ matrix.variant.runner }}
 
     steps:
       - uses: actions/checkout@v4
-      - name: Install deps
-        if: ${{ matrix.arch != 'x86_64' }}
-        run: |
-          # No package manager available anymore, so grab the static binary.
-          # Yes, this sucks. Yes, this is what official docs recommend.
-          # `docker/setup-docker-action` would be really nice to use instead, but calls missing `sudo`.
-          # TODO: use an ARM64 runner `ubuntu-24.04-arm`?
-          curl https://download.docker.com/linux/static/stable/x86_64/docker-29.3.0.tgz --output ./docker.tgz
-          tar xzvf docker.tgz
-          mv docker/* /usr/bin
-
-      - name: Set up QEMU
-        if: ${{ matrix.arch != 'x86_64' }}
-        id: qemu
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
 
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: nxdumpclient.flatpak
           manifest-path: flatpak/org.v1993.NXDumpClient.yml
           cache-key: flatpak-builder-${{ github.sha }}
-          arch: ${{ matrix.arch }}
+          arch: ${{ matrix.variant.arch }}
