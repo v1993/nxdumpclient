@@ -75,9 +75,9 @@ Note for those using `flatpak-builder`: you can skip updating meson subprojects.
 
 ### Dependencies
 
-* GTK >= 4.13
-* libadwaita >= 1.5
-* GLib >= 2.76
+* GTK >= 4.19.4
+* libadwaita >= 1.8
+* GLib >= 2.80
 * GUsb (reasonably new)
 * libportal (optional for non-sandbox builds)
 * blueprint-compiler >= 0.10 (build-only; automatically fetched by meson if not available)

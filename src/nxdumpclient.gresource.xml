@@ -5,7 +5,7 @@
     <file preprocess="xml-stripblanks">PreferencesDialog.ui</file>
     <file preprocess="xml-stripblanks">UdevRulesDialog.ui</file>
 
-    <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
+    <file preprocess="xml-stripblanks">shortcuts-dialog.ui</file>
     <file preprocess="xml-stripblanks">widgets/DeviceStatusRow.ui</file>
     <file preprocess="xml-stripblanks">widgets/FileRow.ui</file>
 
