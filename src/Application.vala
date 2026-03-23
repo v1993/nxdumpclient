@@ -30,7 +30,7 @@ namespace NXDumpClient {
 		private uint cookie = 0;
 
 		construct {
-			cookie = new Application().inhibit(null, LOGOUT | SUSPEND, _("File transfer is in progres"));
+			cookie = new Application().inhibit(null, LOGOUT | SUSPEND, _("File transfer is in progress"));
 			++current_count;
 			debug("Inhibited, cookie: %u, active inhibitors: %u", cookie, current_count);
 		}
