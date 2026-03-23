@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nxdumpclient\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-31 20:46+0300\n"
+"POT-Creation-Date: 2026-03-23 13:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/org.v1993.NXDumpClient.desktop.in.in:3
+#: data/org.v1993.NXDumpClient.desktop.in.in:2
 #: data/org.v1993.NXDumpClient.appdata.xml.in:3 src/Window.blp:7
 msgid "NX Dump Client"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.desktop.in.in:4
-#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:4
+#: data/org.v1993.NXDumpClient.desktop.in.in:3
+#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:3
 msgid "Dump over USB with nxdumptool"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.desktop.in.in:10
+#: data/org.v1993.NXDumpClient.desktop.in.in:9
 msgid "nxdumpclient;nxdumptool;"
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:3
+#: data/org.v1993.NXDumpClient.autostart.desktop.in.in:2
 msgid "NX Dump Client (background launch)"
 msgstr ""
 
@@ -47,20 +47,12 @@ msgstr ""
 msgid "Client for dumping over USB with nxdumptool."
 msgstr ""
 
-#: data/org.v1993.NXDumpClient.appdata.xml.in:18
-msgid "nxdumpclient"
-msgstr ""
-
-#: data/org.v1993.NXDumpClient.appdata.xml.in:19
-msgid "nxdumptool"
-msgstr ""
-
 #: data/org.v1993.NXDumpClient.appdata.xml.in:23
 msgid "NX Dump Tool receiving a file"
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:30
-msgid "A maintenance release before 1.2.0"
+msgid "A maintenance release before 1.2.0."
 msgstr ""
 
 #: data/org.v1993.NXDumpClient.appdata.xml.in:35
@@ -172,7 +164,7 @@ msgid ""
 msgstr ""
 
 #: src/Application.vala:33
-msgid "File transfer is in progres"
+msgid "File transfer is in progress"
 msgstr ""
 
 #: src/Application.vala:102
@@ -251,16 +243,16 @@ msgstr ""
 msgid "Print application version and exit"
 msgstr ""
 
-#: src/Application.vala:355
+#: src/Application.vala:349
 #, c-format
 msgid "Failed to initialize USB context: %s\n"
 msgstr ""
 
-#: src/Application.vala:412
+#: src/Application.vala:406
 msgid "translator-credits"
 msgstr ""
 
-#: src/Application.vala:419
+#: src/Application.vala:413
 msgctxt "credits section header"
 msgid "nxdumptool team"
 msgstr ""
@@ -399,20 +391,20 @@ msgstr ""
 msgid "Error handling a new device"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:170
+#: src/UsbDeviceClient.vala:175
 #, c-format
 msgid "Not enough space for dump (%s required)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:611
+#: src/UsbDeviceClient.vala:664
 msgid "NCA checksum verification failed (non-standard dump options?)"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:660
+#: src/UsbDeviceClient.vala:713
 msgid "NSP header"
 msgstr ""
 
-#: src/UsbDeviceClient.vala:720
+#: src/UsbDeviceClient.vala:779
 msgid "NCA checksum verification failed"
 msgstr ""
 
