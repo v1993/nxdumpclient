@@ -38,6 +38,7 @@ namespace NXDumpClient {
 		END_SESSION,
 		START_EXTRACTED_FS_DUMP,
 		END_EXTRACTED_FS_DUMP,
+		START_BULK_NSP_DUMP,
 	}
 
 	// Error codes directly map to responses
@@ -225,6 +226,7 @@ namespace NXDumpClient {
 		static construct {
 			supported_abis.add(make_abi_version(1, 1));
 			supported_abis.add(make_abi_version(1, 2));
+			supported_abis.add(make_abi_version(1, 3));
 		}
 
 		private GUsb.Interface iface = null;
@@ -324,6 +326,9 @@ namespace NXDumpClient {
 								break;
 							case UsbCommands.END_EXTRACTED_FS_DUMP:
 								yield end_extracted_fs_dump(command_block_buf);
+								break;
+							case UsbCommands.START_BULK_NSP_DUMP:
+								yield start_bulk_nsp_dump(command_block_buf);
 								break;
 							default:
 								throw new UsbDeviceProtocolError.UNSUPPORTED_COMMAND("Unsupported command 0x%X", command_id);
@@ -689,6 +694,11 @@ namespace NXDumpClient {
 
 		private async void end_extracted_fs_dump(uint8[] header) throws Error {
 			debug("end_extracted_fs_dump called");
+			yield send_status_success();
+		}
+
+		private async void start_bulk_nsp_dump(uint8[] header) throws Error {
+			debug("start_bulk_nsp_dump called");
 			yield send_status_success();
 		}
 
