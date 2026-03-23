@@ -1,7 +1,7 @@
 app-id: org.v1993.NXDumpClient
 runtime: org.gnome.Platform
 # Remember to update CI image as well
-runtime-version: '49'
+runtime-version: "50"
 sdk: org.gnome.Sdk
 command: nxdumpclient
 finish-args:
@@ -38,7 +38,8 @@ modules:
           type: json
           url: https://api.github.com/repos/hughsie/libgusb/releases/latest
           version-query: .tag_name
-          url-query: .assets[] | select(.name=="libgusb-" + $version + ".tar.xz")
+          url-query:
+            .assets[] | select(.name=="libgusb-" + $version + ".tar.xz")
             | .browser_download_url
 
   - name: libportal
@@ -50,13 +51,14 @@ modules:
       - -Dtests=false
     sources:
       - type: archive
-        url: https://github.com/flatpak/libportal/releases/download/0.8.1/libportal-0.8.1.tar.xz
-        sha256: 281e54e4f8561125a65d20658f1462ab932b2b1258c376fed2137718441825ac
+        url: https://github.com/flatpak/libportal/releases/download/0.9.1/libportal-0.9.1.tar.xz
+        sha256: de801ee349ed3c255a9af3c01b1a401fab5b3fc1c35eb2fd7dfb35d4b8194d7f
         x-checker-data:
           type: json
           url: https://api.github.com/repos/flatpak/libportal/releases/latest
           version-query: .tag_name
-          url-query: .assets[] | select(.name=="libportal-" + $version + ".tar.xz")
+          url-query:
+            .assets[] | select(.name=="libportal-" + $version + ".tar.xz")
             | .browser_download_url
 
   - name: nxdumpclient
