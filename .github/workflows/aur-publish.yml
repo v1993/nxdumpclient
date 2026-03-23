@@ -20,7 +20,7 @@ jobs:
           envsubst '$PKGBUILD_VERSION,$PKGBUILD_REF' < .github/PKGBUILD.in > PKGBUILD
 
       - name: Upload to AUR
-        uses: KSXGitHub/github-actions-deploy-aur@v4
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
         with:
           pkgname: nxdumpclient
           pkgbuild: ./PKGBUILD
