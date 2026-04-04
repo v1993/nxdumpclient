@@ -6,7 +6,7 @@ data/org.v1993.NXDumpClient.gschema.xml
 # Generate with
 # find src/ -type f \( -name '*.vala' -or -name '*.blp' \) | sort
 src/Application.vala
-src/gtk/help-overlay.blp
+src/shortcuts-dialog.blp
 src/main.vala
 src/PreferencesDialog.blp
 src/PreferencesDialog.vala

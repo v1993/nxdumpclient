@@ -20,7 +20,7 @@ nxdc_blueprints = files(
   'PreferencesDialog.blp',
   'UdevRulesDialog.blp',
 
-  'gtk/help-overlay.blp',
+  'shortcuts-dialog.blp',
   'widgets/DeviceStatusRow.blp',
   'widgets/FileRow.blp',
 )
@@ -28,10 +28,10 @@ nxdc_blueprints = files(
 extra_vala_args = []
 
 nxdc_deps = [
-  dependency('glib-2.0', version: '>=2.76'),
+  dependency('glib-2.0', version: '>= 2.80'),
   dependency('gio-2.0'),
-  dependency('gtk4', version: '>=4.13'),
-  dependency('libadwaita-1', version: '>= 1.5'),
+  dependency('gtk4', version: '>= 4.19.4'),
+  dependency('libadwaita-1', version: '>=1.8'),
 
   dependency('gusb'),
 ]
