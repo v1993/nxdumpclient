@@ -66,12 +66,9 @@ An alternative to direct installation is to use flatpak manifest stored at `flat
 ```bash
 cd nxdumpclient
 git pull
-meson subprojects update
 meson compile -C build
 meson install -C build
 ```
-
-Note for those using `flatpak-builder`: you can skip updating meson subprojects.
 
 ### Dependencies
 
@@ -80,4 +77,4 @@ Note for those using `flatpak-builder`: you can skip updating meson subprojects.
 * GLib >= 2.80
 * GUsb (reasonably new)
 * libportal (optional for non-sandbox builds)
-* blueprint-compiler >= 0.10 (build-only; automatically fetched by meson if not available)
+* blueprint-compiler (build-only)

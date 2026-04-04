@@ -15,6 +15,7 @@ Install *everything* but stuff like `git` with the environment-specific prefix. 
 ```bash
 git
 ${MINGW_PACKAGE_PREFIX}-desktop-file-utils
+${MINGW_PACKAGE_PREFIX}-blueprint-compiler
 ${MINGW_PACKAGE_PREFIX}-gtk4
 ${MINGW_PACKAGE_PREFIX}-libadwaita
 ${MINGW_PACKAGE_PREFIX}-libgusb
