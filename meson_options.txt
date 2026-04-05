@@ -2,7 +2,7 @@ option(
   'libportal',
   type: 'feature',
   value: 'auto',
-  description: 'Use libportal; required to support autostart'
+  description: 'Use libportal; optional unless sandboxed'
 )
 
 option(
